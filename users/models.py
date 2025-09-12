@@ -1,0 +1,65 @@
+from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.core.validators import RegexValidator
+
+
+class CustomUserManager(BaseUserManager):
+    """Кастомное правило создание пользователя и суперпользователя"""
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError('Email обязателен')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        return self.create_user(email, password, **extra_fields)
+
+
+class User(AbstractBaseUser):
+    """Класс создания пользователя"""
+    email = models.EmailField(unique=True, verbose_name="Электронная почта")
+    phone = models.CharField(
+        max_length=20,
+        validators=[
+            RegexValidator(
+                regex=r'^\+?1?\d{9,15}$',
+                message="Телефон должен быть в формате: '+999999999'. До 15 цифр."
+            )
+        ],
+        blank=True,
+        null=True,
+        verbose_name="Телефон"
+    )
+    city = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name="Город"
+    )
+    avatar = models.ImageField(
+        upload_to='user_avatars/',
+        blank=True,
+        null=True,
+        verbose_name="Аватарка"
+    )
+
+    is_active = models.BooleanField(default=True, verbose_name="Активен")
+    is_staff = models.BooleanField(default=False, verbose_name="Персонал")
+    date_joined = models.DateTimeField(auto_now_add=True, verbose_name="Дата регистрации")
+
+    objects = CustomUserManager()
+
+    USERNAME_FIELD = 'email'  # ← Важно! Авторизация по email
+    REQUIRED_FIELDS = []      # Нет обязательных полей кроме email и пароля
+
+    class Meta:
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"
+
+    def __str__(self):
+        return self.email
