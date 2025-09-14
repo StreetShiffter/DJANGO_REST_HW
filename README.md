@@ -56,17 +56,14 @@ python manage.py shell -i ipython #Запуск DJANGO SHELL
 
 ```
 
-# ✒️ Использование кэширования
+# ✒️ Использование API
+*Get запросы на список*
+![Get запросы на список](./media/get.jpg)
 
 
-Проверка работоспособности redis брокера кэширования через shell
-```
-from django.core.cache import cache
+*Get запросы на конкретный объект*
+![Get запросы на конкретный объект](./media/get_pk.jpg)
 
-# Попробуем записать и прочитать из кэша
-cache.set('test_key', 'работает!', 30)  # сохраняем на 30 секунд
-result = cache.get('test_key')
-print(result)  # Должно вывести: работает!
 ```
 ️ ВАЖНО ⚠️
 ```
