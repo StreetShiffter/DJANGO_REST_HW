@@ -1,5 +1,5 @@
 from educations.models import Course
-from educations.serializers import CourseSerializer, LessonSerializer
+from educations.serializers import CourseSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.response import Response
