@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import BaseUserManager, AbstractUser
 from django.core.validators import RegexValidator
 
 
@@ -20,7 +20,7 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
-class User(AbstractBaseUser):
+class User(AbstractUser):
     """Класс создания пользователя"""
     email = models.EmailField(unique=True, verbose_name="Электронная почта")
     phone = models.CharField(
