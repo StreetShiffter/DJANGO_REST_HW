@@ -2,7 +2,7 @@
 
 # 🔖 Описание проекта:
 
-Данный проект является сервисом рассылок по email на фреймворке DJANGO.
+Данный проект является сервисом передачи данных по API из DJANGO REST FRAMEWORK.
 
 # 🔧 Установка компонентов:
 
@@ -57,15 +57,38 @@ python manage.py createsuperuser # дать суперпользователя �
 python manage.py shell -i ipython #Запуск DJANGO SHELL
 
 ```
+🔄 ОБНОВЛЕНИЕ ДАННЫХ
+
+ВНИМАНИЕ!!!
+При создании фикстур для моделей использующие AbstractUser или AbstractBaseUser - фикстура создается
+с нужными полями так же как из БД КРОМЕ ПОЛЕЙ:
+
+-которые имеют null-true - не обязательно заполнять
+-id-pk - не надо
+-last_login - категорически нельзя
+
+При записи через фикстуру обычных моделей — указываем все поля, кроме pk/id,
+и тех, которые необязательны (null=True, blank=True)
+
+Команда записи фикстуры:
+
+python manage.py loaddata НАЗВАНИЕ_ФИКСТУРЫ.json --ignorenonexistent(игнорирование несуществующих связей)
+
 
 # ✒️ Использование API
 *Get запросы на список*
 ![Get запросы на список](./media/get.jpg)
 
-
 *Get запросы на конкретный объект*
 ![Get запросы на конкретный объект](./media/get_pk.jpg)
 
+Для POSTMAN можно выполнять фильтрацию и поиск, если они указаны в полях вьюшки-ендпоинте:
+```
+http://localhost:8000/users/payment/ - основа
+http://localhost:8000/users/payment/?ordering=payment_date=false - сортировка по убыванию(указываем функцию и по какому полю из вьюшки)
+http://localhost:8000/users/payment/?payment_method=transfer - фильтрация (можно не указывать поле filterset) 
+```
+![Get запросы на конкретный объект](./media/endpoint_filter_ordering.jpg)
 ```
 ️ ВАЖНО ⚠️
 ```
