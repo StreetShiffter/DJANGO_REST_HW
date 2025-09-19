@@ -1,0 +1,12 @@
+[
+    {
+        "model": "users.user",
+        "fields": {
+            "email": "vasyapupkin@yandex.ru",
+            "phone": "+79135879641",
+            "city": "Москва",
+            "category": 2,
+            "purchase_price": 2000
+        }
+    }
+]
