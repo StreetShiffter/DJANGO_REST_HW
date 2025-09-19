@@ -19,6 +19,7 @@
 
 [![Django](https://img.shields.io/badge/Django-3.2.0-%2311677A?logo=django&logoColor=white&style=flat&labelColor=black)]( https://www.djangoproject.com/ )
 ![Django REST Framework](https://img.shields.io/badge/DJANGO-REST_FRAMEWORK-ff69b4?style=for-the-badge&logo=django&logoColor=white)
+[![django-filter](https://img.shields.io/badge/django--filter-4.0.0-blue?logo=django&logoColor=white&style=for-the-badge)](https://django-filter.readthedocs.io/)
 ![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)
 [![python-dotenv](https://img.shields.io/badge/python--dotenv-black?logo=envoy&logoColor=orange)]( https://pypi.org/project/python-dotenv/ )
 [![psycopg2](https://img.shields.io/badge/psycopg2-%233178C6?logo=postgresql&logoColor=white)]( https://pypi.org/project/psycopg2/ )
@@ -38,6 +39,7 @@
 ```
 poetry add django # Установка django
 poetry add djangorestframework # Установка django rest framework
+poetry add django-filter # Установка фильтратора DRF
 poetry add pillow # Установка библиотеки для работы с изображениями
 poetry add dotenv # Установка библиотеки для работы с чувствительными данными
 poetry add ipython # Установка библиотеки для работы с чувствительными данными
