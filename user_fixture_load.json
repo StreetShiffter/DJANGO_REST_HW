@@ -1,0 +1,87 @@
+[
+    {
+        "model": "users.user",
+        "fields": {
+            "password": "12345",
+            "is_superuser": false,
+            "username": "pupa",
+            "first_name":"Пупкин",
+            "last_name":"Вася",
+            "email": "vasyapupkin@yandex.ru",
+            "phone": "+79135879641",
+            "city": "Москва",
+            "avatar": "users_avatars/1.jpg",
+            "is_active": true,
+            "is_staff": false,
+            "date_joined": "2025-04-05T10:30:00Z"
+        }
+    },
+    {
+        "model": "users.user",
+        "fields": {
+            "password": "12345",
+            "is_superuser": false,
+            "username": "lupa",
+            "first_name":"Иванович",
+            "last_name":"Иван",
+            "email": "ivanivanovich@yandex.ru",
+            "phone": "+79115855641",
+            "city": "Лондон",
+            "avatar": "users_avatars/2.jpg",
+            "is_active": true,
+            "is_staff": false,
+            "date_joined": "2025-03-09T15:32:02Z"
+        }
+    },
+    {
+        "model": "users.user",
+        "fields": {
+            "password": "12345",
+            "is_superuser": false,
+            "username": "down",
+            "first_name":"Дебилович",
+            "last_name":"Дебил",
+            "email": "debildebilovich@yandex.ru",
+            "phone": "+79110000000",
+            "city": "Пенза",
+            "avatar": "users_avatars/3.jpg",
+            "is_active": true,
+            "is_staff": false,
+            "date_joined": "2025-11-01T11:20:05Z"
+        }
+    },
+    {
+        "model": "users.user",
+        "fields": {
+            "password": "12345",
+            "is_superuser": false,
+            "username": "igor",
+            "first_name":"Игоревна",
+            "last_name":"Раиса",
+            "email": "raisaigorevna@yandex.ru",
+            "phone": "+79254987456",
+            "city": "Саратов",
+            "avatar": "users_avatars/4.jpg",
+            "is_active": true,
+            "is_staff": false,
+            "date_joined": "2024-01-28T15:03:20Z"
+        }
+    },
+    {
+        "model": "users.user",
+        "fields": {
+            "password": "12345",
+            "is_superuser": false,
+            "username": "suck",
+            "first_name":"Соскова",
+            "last_name":"Юлия",
+            "email": "juliasuck@yandex.ru",
+            "phone": "+79258785886",
+            "city": "Дубаи",
+            "avatar": "users_avatars/5.jpg",
+            "is_active": true,
+            "is_staff": false,
+            "date_joined": "2020-07-15T13:13:13Z"
+        }
+    }
+]
