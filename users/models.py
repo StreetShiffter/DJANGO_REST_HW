@@ -2,7 +2,11 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractUser
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
-from educations.models import Lesson, Course
+
+from config import settings
+
+
+# from educations.models import Lesson, Course - меняем на lazy model resolution
 
 
 class CustomUserManager(BaseUserManager):
@@ -72,14 +76,14 @@ class Payment(models.Model):
     ]
 
     user = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,# Заменен прямой импорт на ссылку из конфига
         on_delete=models.CASCADE,
         verbose_name="Пользователь",
         related_name="payments",
     )
     payment_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата оплаты")
     course = models.ForeignKey(
-        Course,
+        'educations.Course',# Заменен прямой импорт на ссылку - защита от циклической загрузки миграции
         on_delete=models.CASCADE,
         null=True,
         blank=True,
@@ -87,7 +91,7 @@ class Payment(models.Model):
         related_name="payments",
     )
     lesson = models.ForeignKey(
-        Lesson,
+        "educations.Lesson",# Заменен прямой импорт на ссылку - защита от циклической загрузки миграции
         on_delete=models.CASCADE,
         null=True,
         blank=True,

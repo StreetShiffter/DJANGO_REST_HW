@@ -1,5 +1,7 @@
 from django.db import models
 
+from users.models import User
+
 
 class Course(models.Model):
     """Класс курса"""
@@ -9,6 +11,14 @@ class Course(models.Model):
     preview = models.ImageField(
         upload_to="course_previews/", verbose_name="Превью", blank=True, null=True
     )
+
+    owner = models.ForeignKey(User,
+                              on_delete=models.CASCADE,
+                              blank=True,
+                              null=True,
+                              related_name="owner_course",
+                              verbose_name="Владелец",
+                              help_text = "Укажите владельца")
 
     class Meta:
         verbose_name = "Курс"
@@ -32,6 +42,14 @@ class Lesson(models.Model):
     course = models.ForeignKey(
         Course, on_delete=models.CASCADE, related_name="lessons", verbose_name="Курс"
     )
+
+    owner = models.ForeignKey(User,
+                              on_delete=models.CASCADE,
+                              blank=True,
+                              null=True,
+                              related_name="owner_lesson",
+                              verbose_name="Владелец",
+                              help_text="Укажите владельца")
 
     class Meta:
         verbose_name = "Урок"
