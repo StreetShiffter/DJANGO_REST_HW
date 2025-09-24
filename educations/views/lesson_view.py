@@ -1,27 +1,36 @@
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+
 from educations.models import Lesson
 from educations.serializers import LessonSerializer
-from rest_framework import generics
+from users.permissions import IsOwnerOrModerator
 
 
-# Возможно объединять несколько классов вместе(если не переопределять методы)
 class LessonCreateList(generics.ListCreateAPIView):
-    """Показ списка уроков и создание"""
-
+    """Viewset для создания и просмотра урока или списков урока"""
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrModerator, IsAdminUser]# Распределение прав пользователя и модератора
 
     def perform_create(self, serializer):
-        lesson = serializer.save()
-        owner_lesson = self.request.user
-        lesson.save()
+        """Автоприсваиание автора - владельца"""
+        serializer.save(owner=self.request.user)
 
-
+    def get_queryset(self):
+        """Кто может смотреть все курсы или только свои"""
+        if self.request.user.groups.filter(name='Moderator').exists():
+            return Lesson.objects.all()
+        return Lesson.objects.filter(owner=self.request.user)
 
 
 class LessonRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
-    """Изменение объекта полное или частичное, а так же его удаление"""
-
+    """Viewset для обновления и удаления урока"""
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrModerator, IsAdminUser]
 
-
+    def get_queryset(self):
+        """Кто может смотреть все уроки или только свои"""
+        if self.request.user.groups.filter(name='Moderator').exists():
+            return Lesson.objects.all()
+        return Lesson.objects.filter(owner=self.request.user)
