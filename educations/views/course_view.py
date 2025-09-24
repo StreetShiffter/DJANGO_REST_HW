@@ -18,3 +18,9 @@ class CourseViewSet(viewsets.ModelViewSet):
         if self.action == "retrieve":
             return CourseSerializerList
         return CourseSerializer
+
+    def perform_create(self, serializer):
+        course = serializer.save()
+        owner_course = self.request.user
+        course.save()
+
