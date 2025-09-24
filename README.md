@@ -89,9 +89,33 @@ http://localhost:8000/users/payment/?ordering=payment_date=false - сортир�
 http://localhost:8000/users/payment/?payment_method=transfer - фильтрация (можно не указывать поле filterset) 
 ```
 ![Get запросы на конкретный объект](./media/endpoint_filter_ordering.jpg)
+
+ПРОВЕРКА В DJANGO_SHELL на названия нужных прав:
+```
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
+
+# Найди контент-тип для модели Course
+course_ct = ContentType.objects.get(app_label='educations', model='course')
+lesson_ct = ContentType.objects.get(app_label='educations', model='lesson')
+
+# Посмотри разрешения
+perms = Permission.objects.filter(
+    content_type__in=[course_ct, lesson_ct],
+    codename__in=[
+        'add_course', 'change_course',
+        'add_lesson', 'change_lesson'
+    ]
+)
+
+for p in perms:
+    print(p.codename, p.id)
+```
+
+
 ```
 ️ ВАЖНО ⚠️
-```
+
 python manage.py runserver 8080 # Запуск сервера
 CTRL+С # Отключение сервера
 ```
@@ -113,6 +137,37 @@ Postman коллекция
 🔗 Открыть в Postman
 
 💡 Совет: Импортируйте коллекцию в Postman → "Import" → "Link" или "File". 
+### 📶 Работа с запросами
+```
+http://localhost:8000/users/payment/ - основа
+http://localhost:8000/users/payment/?ordering=payment_date=false - сортировка по убыванию(указываем функцию и по какому полю из вьюшки)
+http://localhost:8000/users/payment/?payment_method=transfer - фильтрация (можно не указывать поле filterset) 
 
+Регистрация:
+http://localhost:8000/users/register/ - post(json-raw)
+
+Вход и получение токена post:
+http://localhost:8000/users/login/ в body отправить json (json-raw)
+
+Просмотр профиля get:
+http://localhost:8000/users/profile/ (headers) Accept -Bearer  токен 
+
+Редактирование профиля patch:
+http://localhost:8000/users/profile/ (json-raw) patch + (headers) Accept -Bearer токен
+
+Редактирование профиля полностью( нужны важные поля входа в аккаунт) put:
+http://localhost:8000/users/profile/ (json-raw) patch + (headers) Accept - Bearer токен 
+
+Удаление профиля delete:
+http://localhost:8000/users/profile/delete (headers) Bearer  токен 
+
+Просмотр списков пользователя get:
+http://localhost:8000/users/list/(headers) Accept - Bearer  токен 
+
+Отправка refresh токена post:
+http://localhost:8000/users/list/(headers) Content-Type - application/json/ 
+в body отправить json
+{"refresh":"токен"} 
+```
 📄 Лицензия
 Этот проект лицензирован по MIT License — подробнее см. файл LICENSE.
