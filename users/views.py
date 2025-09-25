@@ -5,7 +5,7 @@ from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, Destro
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from users.models import Payment, User
-from users.serializers import PaymentSerializer, UserSerializer
+from users.serializers import PaymentSerializer, UserSerializer, UserProfileSerializer
 
 
 class PaymentViewSet(viewsets.ModelViewSet):
@@ -13,6 +13,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
 
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
+    permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ["course", "lesson", "payment_method"]
     ordering_fields = ["payment_date"]
@@ -41,6 +42,12 @@ class UserProfileAPIView(RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user  # Всегда возвращает текущего пользователя
+
+    def get_serializer_class(self):
+        """Метод ловит действие 'retrieve', то перенаправляет на другой сериализатор"""
+        if self.action == "retrieve":
+            return UserProfileSerializer
+        return UserSerializer
 
 
 class UserDeleteAPIView(DestroyAPIView):
