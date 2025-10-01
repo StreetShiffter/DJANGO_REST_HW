@@ -2,6 +2,7 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from educations.models import Lesson
+from educations.paginators import MyPagination
 from educations.serializers import LessonSerializer
 from users.permissions import IsOwnerOrModerator
 
@@ -11,6 +12,7 @@ class LessonCreateList(generics.ListCreateAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrModerator, IsAdminUser]# Распределение прав пользователя и модератора
+    pagination_class = MyPagination
 
 
     def perform_create(self, serializer):

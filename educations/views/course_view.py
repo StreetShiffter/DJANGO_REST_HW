@@ -1,6 +1,7 @@
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from educations.models import Course
+from educations.paginators import MyPagination
 from educations.serializers import CourseSerializer, CourseSerializerList
 
 from rest_framework import viewsets
@@ -19,6 +20,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated,  IsOwnerOrModerator, IsAdminUser]
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
+    pagination_class = MyPagination
 
     def get_serializer_class(self):
         """Метод ловит действие 'retrieve', то перенаправляет на другой сериализатор"""
