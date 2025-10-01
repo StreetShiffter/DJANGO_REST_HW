@@ -1,7 +1,11 @@
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+
 from educations.models import Course
 from educations.serializers import CourseSerializer, CourseSerializerList
 
 from rest_framework import viewsets
+
+from users.permissions import IsOwnerOrModerator
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -9,12 +13,24 @@ class CourseViewSet(viewsets.ModelViewSet):
     ModelViewSet - достаточен для передачи queryset и serializer и все работает из коробки
     """
 
-    queryset = (
-        Course.objects.all()
-    )  # Достаем объекты из БД(убираем сериализатор т.к. есть метод)
+    # queryset = (
+    #     Course.objects.all()
+    # )  # Достаем объекты из БД(убираем сериализатор т.к. есть метод)
+    permission_classes = [IsAuthenticated,  IsOwnerOrModerator, IsAdminUser]
 
     def get_serializer_class(self):
         """Метод ловит действие 'retrieve', то перенаправляет на другой сериализатор"""
         if self.action == "retrieve":
             return CourseSerializerList
         return CourseSerializer
+
+    def get_queryset(self):
+        """Кто может смотреть все уроки или только свои"""
+        if self.request.user.groups.filter(name='Moderator').exists():
+            return Course.objects.all()
+        return Course.objects.filter(owner=self.request.user)
+
+    def perform_create(self, serializer):
+        """Автоприсваиание автора - владельца"""
+        serializer.save(owner=self.request.user)
+
