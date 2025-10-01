@@ -12,6 +12,7 @@ class LessonCreateList(generics.ListCreateAPIView):
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrModerator, IsAdminUser]# Распределение прав пользователя и модератора
 
+
     def perform_create(self, serializer):
         """Автоприсваиание автора - владельца"""
         serializer.save(owner=self.request.user)
