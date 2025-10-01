@@ -37,15 +37,13 @@ class UserListAPIView(generics.ListAPIView):
 
 
 class UserProfileAPIView(RetrieveUpdateAPIView):
-    serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]  # Только авторизованные
+    permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        return self.request.user  # Всегда возвращает текущего пользователя
+        return self.request.user
 
     def get_serializer_class(self):
-        """Метод ловит действие 'retrieve', то перенаправляет на другой сериализатор"""
-        if self.action == "retrieve":
+        if self.request.method == 'GET':
             return UserProfileSerializer
         return UserSerializer
 
