@@ -1,4 +1,5 @@
 import os
+import sys
 from datetime import timedelta
 
 from dotenv import load_dotenv
@@ -152,6 +153,15 @@ AUTH_USER_MODEL = "users.User"  # Указываем кастомную моде
 #
 # DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 #
+
+if 'test' in sys.argv:
+    ALLOWED_HOSTS = ['testserver', 'localhost', '127.0.0.1']
+
+    # Дополнительные настройки для тестов
+    PASSWORD_HASHERS = [
+        'django.contrib.auth.hashers.MD5PasswordHasher',  # Быстрее для тестов
+    ]
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -190,3 +200,4 @@ LOGGING = {
 #         'LOCATION': os.getenv('REDIS_URL'),
 #     }
 # }
+
