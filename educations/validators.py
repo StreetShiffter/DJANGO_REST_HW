@@ -15,6 +15,7 @@ class CorrectVideoUrl:
     """Проверяет, что video_url — это ссылка на YouTube"""
     def __init__(self, field):
         self.field = field
+        self.__fields__ = [field]
 
     def __call__(self, attrs):
         value = attrs.get(self.field)
@@ -32,6 +33,7 @@ class MatchVideoUrl:
     """Проверяет, что в текстовом поле (title/description) НЕТ ссылок на YouTube"""
     def __init__(self, field):
         self.field = field
+        self.__fields__ = [field]
 
     def __call__(self, attrs):
         value = attrs.get(self.field)
