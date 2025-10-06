@@ -17,7 +17,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     # queryset = (
     #     Course.objects.all()
     # )  # Достаем объекты из БД(убираем сериализатор т.к. есть метод)
-    permission_classes = [IsAuthenticated,  IsOwnerOrModerator, IsAdminUser]
+    permission_classes = [IsAuthenticated, IsOwnerOrModerator]
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     pagination_class = MyPagination
@@ -30,7 +30,7 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """Кто может смотреть все уроки или только свои"""
-        if self.request.user.groups.filter(name='Moderator').exists():
+        if self.request.user.is_staff or self.request.user.groups.filter(name='Moderator').exists():
             return Course.objects.all()
         return Course.objects.filter(owner=self.request.user)
 

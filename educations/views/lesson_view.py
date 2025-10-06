@@ -11,7 +11,7 @@ class LessonCreateList(generics.ListCreateAPIView):
     """Viewset для создания и просмотра урока или списков урока"""
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrModerator, IsAdminUser]# Распределение прав пользователя и модератора
+    permission_classes = [IsAuthenticated]# Распределение прав пользователя и модератора
     pagination_class = MyPagination
 
 
@@ -30,10 +30,10 @@ class LessonRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     """Viewset для обновления и удаления урока"""
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrModerator, IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         """Кто может смотреть все уроки или только свои"""
-        if self.request.user.groups.filter(name='Moderator').exists():
+        if self.request.user.is_staff or self.request.user.groups.filter(name='Moderator').exists():
             return Lesson.objects.all()
         return Lesson.objects.filter(owner=self.request.user)
