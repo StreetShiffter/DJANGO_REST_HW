@@ -1,5 +1,13 @@
+from rest_framework.fields import SerializerMethodField
 from rest_framework.serializers import ModelSerializer
-from users.models import Payment, User
+from users.models import Payment, User, Subscription
+
+class SubscribeSerializer(ModelSerializer):
+    """Сериализатор модели 'Подписки'"""
+
+    class Meta:
+        model = Subscription
+        fields = "__all__"
 
 
 class PaymentSerializer(ModelSerializer):
@@ -8,6 +16,7 @@ class PaymentSerializer(ModelSerializer):
     class Meta:
         model = Payment
         fields = "__all__"
+
 
 class UserSerializer(ModelSerializer):
     """Сериализатор редактирования"""
@@ -26,11 +35,16 @@ class UserSerializer(ModelSerializer):
             user.save()
         return user
 
+
 class UserProfileSerializer(ModelSerializer):
     """Сериализатор просмотр профиля"""
+    subscribe = SerializerMethodField()
+
     class Meta:
         model = User
         fields = ["username", "email", "first_name", "last_name",]
         read_only_fields = fields #Только для чтения
+
+
 
 

@@ -37,7 +37,7 @@ class Lesson(models.Model):
         upload_to="lesson_previews/", verbose_name="Превью", blank=True, null=True
     )
     video_url = models.URLField(
-        verbose_name="Ссылка на видео", help_text="URL видео на YouTube, Vimeo и т.п."
+        verbose_name="Ссылка на видео", help_text="URL видео на YouTube"
     )
     course = models.ForeignKey(
         Course, on_delete=models.CASCADE, related_name="lessons", verbose_name="Курс"

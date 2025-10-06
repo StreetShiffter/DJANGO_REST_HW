@@ -1,6 +1,7 @@
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from educations.models import Course
+from educations.paginators import MyPagination
 from educations.serializers import CourseSerializer, CourseSerializerList
 
 from rest_framework import viewsets
@@ -17,10 +18,13 @@ class CourseViewSet(viewsets.ModelViewSet):
     #     Course.objects.all()
     # )  # Достаем объекты из БД(убираем сериализатор т.к. есть метод)
     permission_classes = [IsAuthenticated,  IsOwnerOrModerator, IsAdminUser]
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+    pagination_class = MyPagination
 
     def get_serializer_class(self):
         """Метод ловит действие 'retrieve', то перенаправляет на другой сериализатор"""
-        if self.action == "retrieve":
+        if self.action in ['list', 'retrieve']:
             return CourseSerializerList
         return CourseSerializer
 
@@ -33,4 +37,9 @@ class CourseViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         """Автоприсваиание автора - владельца"""
         serializer.save(owner=self.request.user)
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request  # важно для доступа к user
+        return context
 
