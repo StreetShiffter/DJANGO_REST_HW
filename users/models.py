@@ -76,14 +76,14 @@ class Payment(models.Model):
     ]
 
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,# Заменен прямой импорт на ссылку из конфига
+        settings.AUTH_USER_MODEL,  # Заменен прямой импорт на ссылку из конфига
         on_delete=models.CASCADE,
         verbose_name="Пользователь",
         related_name="payments",
     )
     payment_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата оплаты")
     course = models.ForeignKey(
-        'educations.Course',# Заменен прямой импорт на ссылку - защита от циклической загрузки миграции
+        "educations.Course",  # Заменен прямой импорт на ссылку - защита от циклической загрузки миграции
         on_delete=models.CASCADE,
         null=True,
         blank=True,
@@ -91,7 +91,7 @@ class Payment(models.Model):
         related_name="payments",
     )
     lesson = models.ForeignKey(
-        "educations.Lesson",# Заменен прямой импорт на ссылку - защита от циклической загрузки миграции
+        "educations.Lesson",  # Заменен прямой импорт на ссылку - защита от циклической загрузки миграции
         on_delete=models.CASCADE,
         null=True,
         blank=True,
@@ -107,16 +107,10 @@ class Payment(models.Model):
     )
 
     stripe_payment_intent_id = models.CharField(
-        max_length=255,
-        blank=True,
-        null=True,
-        verbose_name="ID платежа в Stripe"
+        max_length=255, blank=True, null=True, verbose_name="ID платежа в Stripe"
     )
     stripe_status = models.CharField(
-        max_length=50,
-        blank=True,
-        null=True,
-        verbose_name="Статус платежа в Stripe"
+        max_length=50, blank=True, null=True, verbose_name="Статус платежа в Stripe"
     )
 
     class Meta:
@@ -154,34 +148,37 @@ class Subscription(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         verbose_name="Пользователь",
-        related_name="subscriptions"
+        related_name="subscriptions",
     )
     course = models.ForeignKey(
-        'educations.Course',
+        "educations.Course",
         on_delete=models.CASCADE,
         verbose_name="Курс",
-        related_name="subscribers"
+        related_name="subscribers",
     )
     is_active = models.BooleanField(
         default=True,
         verbose_name="Активна",
-        help_text="Указывает, активна ли подписка. Неактивные подписки не получают уведомлений."
+        help_text="Указывает, активна ли подписка. Неактивные подписки не получают уведомлений.",
     )
     created_at = models.DateTimeField(
         auto_now_add=True,
         verbose_name="Дата создания",
-        help_text="Дата и время создания подписки."
+        help_text="Дата и время создания подписки.",
     )
     updated_at = models.DateTimeField(
         auto_now=True,
         verbose_name="Дата обновления",
-        help_text="Дата и время последнего изменения подписки."
+        help_text="Дата и время последнего изменения подписки.",
     )
 
     class Meta:
         verbose_name = "Подписка"
         verbose_name_plural = "Подписки"
-        unique_together = ("user", "course")  # Один пользователь может быть подписан на курс только один раз
+        unique_together = (
+            "user",
+            "course",
+        )  # Один пользователь может быть подписан на курс только один раз
         ordering = ["-created_at"]
 
     def __str__(self):

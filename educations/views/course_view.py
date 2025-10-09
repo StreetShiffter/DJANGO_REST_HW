@@ -1,9 +1,9 @@
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 
 from educations.models import Course
 from educations.paginators import MyPagination
 from educations.serializers import CourseSerializer, CourseSerializerList
-
+from educations.tasks import send_mail_update_course
 from rest_framework import viewsets
 
 from users.permissions import IsOwnerOrModerator
@@ -24,13 +24,16 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         """Метод ловит действие 'retrieve', то перенаправляет на другой сериализатор"""
-        if self.action in ['list', 'retrieve']:
+        if self.action in ["list", "retrieve"]:
             return CourseSerializerList
         return CourseSerializer
 
     def get_queryset(self):
         """Кто может смотреть все уроки или только свои"""
-        if self.request.user.is_staff or self.request.user.groups.filter(name='Moderator').exists():
+        if (
+            self.request.user.is_staff
+            or self.request.user.groups.filter(name="Moderator").exists()
+        ):
             return Course.objects.all()
         return Course.objects.filter(owner=self.request.user)
 
@@ -40,6 +43,10 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        context['request'] = self.request  # важно для доступа к user
+        context["request"] = self.request  # важно для доступа к user
         return context
 
+    def perform_update(self, serializer):
+        """При методе PUT или PATCH срабатывает task на отправку сообщения при изменении курса"""
+        course = serializer.save()
+        send_mail_update_course.delay(course.id)
