@@ -1,4 +1,4 @@
-from django.utils import timezone
+from rest_framework.utils import timezone
 from datetime import timedelta
 
 from celery import shared_task
