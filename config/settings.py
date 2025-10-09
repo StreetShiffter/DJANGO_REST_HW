@@ -2,6 +2,7 @@ import os
 import sys
 from datetime import timedelta
 
+from celery.schedules import crontab
 from dotenv import load_dotenv
 
 from pathlib import Path
@@ -35,6 +36,7 @@ INSTALLED_APPS = [
     "users",
     "django_filters",
     "drf_spectacular",
+    "django_celery_beat",
     # "corsheaders",
 ]
 
@@ -232,4 +234,9 @@ CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = TIME_ZONE
 
 # Настройки Celery Beat (планировщик)
-CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+CELERY_BEAT_SCHEDULE = {
+    'deactivate-inactive-users-daily': {
+        'task': 'educations.tasks.deactivate_inactive_users',
+        'schedule': crontab(hour=2, minute=0),  # каждый день в 02:00
+    },
+}
