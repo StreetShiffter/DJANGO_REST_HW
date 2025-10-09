@@ -215,3 +215,19 @@ LOGGING = {
 #     }
 # }
 
+# Настройки Celery
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+# Используем eventlet на Windows
+CELERY_WORKER_POOL = 'eventlet'
+CELERY_WORKER_POOL_RESTARTS = True
+
+# Опционально: сериализация
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+
+# Настройки Celery Beat (планировщик)
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'

@@ -11,7 +11,7 @@ from educations.models import Course, Lesson
 from educations.serializers import CourseSerializer, LessonSerializer
 from users.models import Payment, User, Subscription
 from users.serializers import PaymentSerializer, UserSerializer, UserProfileSerializer
-from users.services import create_stripe_product_and_price, process_lesson_payment, process_course_payment
+from users.services import process_lesson_payment, process_course_payment
 
 
 class PaymentViewSet(viewsets.ModelViewSet):
