@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator
 from django.db import models
 
 from users.models import User
@@ -10,6 +11,14 @@ class Course(models.Model):
     description = models.TextField(verbose_name="Описание")
     preview = models.ImageField(
         upload_to="course_previews/", verbose_name="Превью", blank=True, null=True
+    )
+
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name="Стоимость курса",
+        default=500.00, # например, 500 USD
+        validators=[MinValueValidator(0)]
     )
 
     owner = models.ForeignKey(User,
@@ -41,6 +50,14 @@ class Lesson(models.Model):
     )
     course = models.ForeignKey(
         Course, on_delete=models.CASCADE, related_name="lessons", verbose_name="Курс"
+    )
+
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name="Стоимость урока",
+        default=100.00,  # например, 100 USD
+        validators = [MinValueValidator(0)]
     )
 
     owner = models.ForeignKey(User,
