@@ -2,6 +2,7 @@ import os
 import sys
 from datetime import timedelta
 
+from celery.schedules import crontab
 from dotenv import load_dotenv
 
 from pathlib import Path
@@ -31,10 +32,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "educations",
     "rest_framework",
-    'rest_framework_simplejwt',
+    "rest_framework_simplejwt",
     "users",
     "django_filters",
     "drf_spectacular",
+    "django_celery_beat",
     # "corsheaders",
 ]
 
@@ -42,15 +44,17 @@ REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.SearchFilter",
-        "rest_framework.filters.OrderingFilter",],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',],
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+        "rest_framework.filters.OrderingFilter",
+    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
 
 MIDDLEWARE = [
@@ -157,23 +161,23 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "users.User"  # Указываем кастомную модель для уинтификации
 #
-# EMAIL_BACKEND = os.getenv('EMAIL_BACKEND') #Настройки почты
-# EMAIL_HOST = os.getenv('EMAIL_HOST')
-# EMAIL_PORT = os.getenv('EMAIL_PORT')
-# EMAIL_USE_TLS = True if os.getenv('EMAIL_USE_TLS') == 'True' else False
-# EMAIL_USE_SSL = True if os.getenv('EMAIL_USE_SSL') == 'True' else False
-# EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-#
-# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND') #Настройки почты
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_USE_TLS = True if os.getenv('EMAIL_USE_TLS') == 'True' else False
+EMAIL_USE_SSL = True if os.getenv('EMAIL_USE_SSL') == 'True' else False
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 #
 
-if 'test' in sys.argv:
-    ALLOWED_HOSTS = ['testserver', 'localhost', '127.0.0.1']
+if "test" in sys.argv:
+    ALLOWED_HOSTS = ["testserver", "localhost", "127.0.0.1"]
 
     # Дополнительные настройки для тестов
     PASSWORD_HASHERS = [
-        'django.contrib.auth.hashers.MD5PasswordHasher',  # Быстрее для тестов
+        "django.contrib.auth.hashers.MD5PasswordHasher",  # Быстрее для тестов
     ]
 
 LOGGING = {
@@ -215,3 +219,24 @@ LOGGING = {
 #     }
 # }
 
+# Настройки Celery
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+
+# Используем eventlet на Windows
+CELERY_WORKER_POOL = "eventlet"
+CELERY_WORKER_POOL_RESTARTS = True
+
+# Опционально: сериализация
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = TIME_ZONE
+
+# Настройки Celery Beat (планировщик)
+CELERY_BEAT_SCHEDULE = {
+    'deactivate-inactive-users-daily': {
+        'task': 'educations.tasks.deactivate_inactive_users',
+        'schedule': crontab(hour=2, minute=0),  # каждый день в 02:00
+    },
+}

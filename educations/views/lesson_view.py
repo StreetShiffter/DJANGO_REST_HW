@@ -4,16 +4,19 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from educations.models import Lesson
 from educations.paginators import MyPagination
 from educations.serializers import LessonSerializer
+from educations.tasks import send_mail_update_course
 from users.permissions import IsOwnerOrModerator
 
 
 class LessonCreateList(generics.ListCreateAPIView):
     """Viewset для создания и просмотра урока или списков урока"""
+
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = [IsAuthenticated]# Распределение прав пользователя и модератора
+    permission_classes = [
+        IsAuthenticated
+    ]  # Распределение прав пользователя и модератора
     pagination_class = MyPagination
-
 
     def perform_create(self, serializer):
         """Автоприсваиание автора - владельца"""
@@ -21,19 +24,23 @@ class LessonCreateList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         """Кто может смотреть все курсы или только свои"""
-        if self.request.user.groups.filter(name='Moderator').exists():
+        if self.request.user.groups.filter(name="Moderator").exists():
             return Lesson.objects.all()
         return Lesson.objects.filter(owner=self.request.user)
 
 
 class LessonRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     """Viewset для обновления и удаления урока"""
+
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         """Кто может смотреть все уроки или только свои"""
-        if self.request.user.is_staff or self.request.user.groups.filter(name='Moderator').exists():
+        if (
+            self.request.user.is_staff
+            or self.request.user.groups.filter(name="Moderator").exists()
+        ):
             return Lesson.objects.all()
         return Lesson.objects.filter(owner=self.request.user)

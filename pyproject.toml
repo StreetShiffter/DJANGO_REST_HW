@@ -6,7 +6,8 @@ authors = [
     {name = "StreetShiffter",email = "agwzdushaz@gmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.12,<3.13"
+django-celery-beat = { version = "^2.8.1", python = ">=3.13,<4.0" }
 dependencies = [
     "django (>=5.2.6,<6.0.0)",
     "psycopg2-binary (>=2.9.10,<3.0.0)",
@@ -19,7 +20,11 @@ dependencies = [
     "djangorestframework-simplejwt (>=5.5.1,<6.0.0)",
     "drf-spectacular (>=0.28.0,<0.29.0)",
     "django-cors-headers (>=4.9.0,<5.0.0)",
-    "stripe (>=13.0.1,<14.0.0)"
+    "stripe (>=13.0.1,<14.0.0)",
+    "celery (>=5.5.3,<6.0.0)",
+    "redis (>=6.4.0,<7.0.0)",
+    "eventlet (>=0.40.3,<0.41.0)",
+    "django-celery-beat (>=2.8.1,<3.0.0)"
 ]
 
 

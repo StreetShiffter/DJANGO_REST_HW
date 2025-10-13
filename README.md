@@ -119,6 +119,28 @@ for p in perms:
 python manage.py runserver 8080 # Запуск сервера
 CTRL+С # Отключение сервера
 ```
+
+🔝 РАБОТА с CELERY 
+*Запуск команд воркера и планера*
+```
+poetry run celery -A config worker -l INFO -P eventlet
+poetry run celery -A config beat -l INFO
+poetry run celery -A my_project worker —loglevel=info
+poetry run celery -A my_project beat —loglevel=info
+```
+Далее работа в *setting.py*
+```
+INSTALLED_APPS = [
+    # ... другие приложения ...
+    'django_celery_beat',
+]
+```
+💡ВАЖНО💡
+ВЫПОЛНИТЕ МИГРАЦИИ ДО РАБОТЫ С ПЛАНЕРОМ + запустите REDIS 
+```
+poetry run python manage.py migrate
+```
+
 ### 🌐 Пример страниц:
 *Главная страница*
 ![Главная страница](./static/mailservices/images/home.jpg)

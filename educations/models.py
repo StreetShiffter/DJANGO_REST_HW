@@ -17,17 +17,19 @@ class Course(models.Model):
         max_digits=10,
         decimal_places=2,
         verbose_name="Стоимость курса",
-        default=500.00, # например, 500 USD
-        validators=[MinValueValidator(0)]
+        default=500.00,  # например, 500 USD
+        validators=[MinValueValidator(0)],
     )
 
-    owner = models.ForeignKey(User,
-                              on_delete=models.CASCADE,
-                              blank=True,
-                              null=True,
-                              related_name="owner_course",
-                              verbose_name="Владелец",
-                              help_text = "Укажите владельца")
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name="owner_course",
+        verbose_name="Владелец",
+        help_text="Укажите владельца",
+    )
 
     class Meta:
         verbose_name = "Курс"
@@ -57,16 +59,18 @@ class Lesson(models.Model):
         decimal_places=2,
         verbose_name="Стоимость урока",
         default=100.00,  # например, 100 USD
-        validators = [MinValueValidator(0)]
+        validators=[MinValueValidator(0)],
     )
 
-    owner = models.ForeignKey(User,
-                              on_delete=models.CASCADE,
-                              blank=True,
-                              null=True,
-                              related_name="owner_lesson",
-                              verbose_name="Владелец",
-                              help_text="Укажите владельца")
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name="owner_lesson",
+        verbose_name="Владелец",
+        help_text="Укажите владельца",
+    )
 
     class Meta:
         verbose_name = "Урок"

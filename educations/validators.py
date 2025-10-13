@@ -11,8 +11,10 @@ from rest_framework import serializers
 #
 #     return value
 
+
 class CorrectVideoUrl:
     """Проверяет, что video_url — это ссылка на YouTube"""
+
     def __init__(self, field):
         self.field = field
         self.__fields__ = [field]
@@ -22,15 +24,16 @@ class CorrectVideoUrl:
         if not value:  # пропускаем, если пусто — пусть required решает
             return attrs
 
-        youtube_regex = r'https?://(?:www\.|m\.)?youtube\.com/'
+        youtube_regex = r"https?://(?:www\.|m\.)?youtube\.com/"
         if not re.search(youtube_regex, value):
-            raise serializers.ValidationError({
-                self.field: "Ссылка должна быть на видео с YouTube."
-            })
+            raise serializers.ValidationError(
+                {self.field: "Ссылка должна быть на видео с YouTube."}
+            )
 
 
 class MatchVideoUrl:
     """Проверяет, что в текстовом поле (title/description) НЕТ ссылок на YouTube"""
+
     def __init__(self, field):
         self.field = field
         self.__fields__ = [field]
@@ -40,9 +43,8 @@ class MatchVideoUrl:
         if not value or not isinstance(value, str):
             return attrs  # пропускаем, если нет значения или не строка
 
-        youtube_regex = r'https?://(?:www\.|m\.)?youtube\.com/'
+        youtube_regex = r"https?://(?:www\.|m\.)?youtube\.com/"
         if re.search(youtube_regex, value):
-            raise serializers.ValidationError({
-                self.field: "Текст не должен содержать ссылки на YouTube."
-            })
-
+            raise serializers.ValidationError(
+                {self.field: "Текст не должен содержать ссылки на YouTube."}
+            )
