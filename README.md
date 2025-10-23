@@ -191,5 +191,34 @@ http://localhost:8000/users/list/(headers) Content-Type - application/json/
 в body отправить json
 {"refresh":"токен"} 
 ```
+
+### DOCKER
+
+Команда для создания образа из докерфайла(важно что бы poetry lock и toml использовали одну версию пайтона)
+```
+docker build -t django_rest_hw .
+```
+
+Команда просмотра образов
+```
+docker images
+```
+Команда просмотра логов
+
+```
+docker logs my-django-app
+```
+
+
+Команда остановки контейнера и чистки кэша
+```
+docker stop my-django-app
+docker rm my-django-app
+```
+
+Запуск контейнера с параметрами .env *(d settings ALLOWED_HOSTS = ['*'] для разработки)*
+```
+docker run -d --name my-django-app -p 8000:8000 --env-file .env django_rest_hw
+```
 📄 Лицензия
 Этот проект лицензирован по MIT License — подробнее см. файл LICENSE.
