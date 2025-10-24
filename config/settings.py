@@ -18,7 +18,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if os.getenv("DEBUG") == "True" else False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']# только для разработки\ 'localhost', '127.0.0.1' -для прода
 
 
 # Application definition
@@ -219,9 +219,11 @@ LOGGING = {
 #     }
 # }
 
-# Настройки Celery
-CELERY_BROKER_URL = "redis://localhost:6379/0"
-CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+# Настройки Celery(верхние строки для работы без докера)
+# CELERY_BROKER_URL = "redis://localhost:6379/0"
+# CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_BROKER_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0') # Используем REDIS_URL из окружения
+CELERY_RESULT_BACKEND = os.getenv('REDIS_URL', 'redis://localhost:6379/0') # Используем REDIS_URL из окружения
 
 # Используем eventlet на Windows
 CELERY_WORKER_POOL = "eventlet"

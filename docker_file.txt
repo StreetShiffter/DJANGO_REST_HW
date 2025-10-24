@@ -1,0 +1,19 @@
+FROM python:3.12
+# Устанавливаем рабочую директорию
+WORKDIR /DJANGO_REST_HW
+
+# Устанавливаем Poetry
+RUN pip install --no-cache-dir poetry
+# Копируем файлы зависимостей
+COPY pyproject.toml poetry.lock ./
+
+# Устанавливаем зависимости
+# Важно: отключаем создание виртуального окружения, чтобы работать в контейнере напрямую
+RUN poetry config virtualenvs.create false && \
+    poetry install --only main --no-interaction --no-ansi --no-root
+
+# Копируем остальной код проекта(указать .dockerignore для не нежелательных файлов)
+COPY . .
+
+# Определяем команду для запуска приложения
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
