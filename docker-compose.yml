@@ -4,9 +4,8 @@ services:
 # ПРОПИСЫВАЕМ DJANGO приложение
   web:
     build: .
-#    command: python manage.py runserver 0.0.0.0:8000
-    command: sh -c "python manage.py makemigrations && python manage.py migrate 
-             && python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "python manage.py collectstatic --noinput 
+             && gunicorn config.wsgi:application --bind 0.0.0.0:8000"
     # тома для сохранения данных вне контейнера
     volumes:
       - .:/DJANGO_REST_HW
@@ -54,6 +53,19 @@ services:
     image: redis:7-alpine
     ports:
       - "6379:6379"
+
+#ПРОПИСЫВАЕМ ВЕБ СЕРВЕР
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+#      - "443:443"# если будете настраивать HTTPS
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - static_volume:/static
+      - media_volume:/media
+    depends_on:
+      - web
 
 # ПРОПИСЫВАЕМ postgres(db это DB_HOST)
   db:

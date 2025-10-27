@@ -17,8 +17,9 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if os.getenv("DEBUG") == "True" else False
+# * только для разработки\ 'localhost', '127.0.0.1' -для прода
+ALLOWED_HOSTS = [os.getenv("ALLOWED_HOSTS", "*")]
 
-ALLOWED_HOSTS = ['*']# только для разработки\ 'localhost', '127.0.0.1' -для прода
 
 
 # Application definition
@@ -106,7 +107,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # Определяем, запущено ли в Docker (по наличию специальной переменной)
 USE_DOCKER = os.getenv("USE_DOCKER", "False") == "True"
-
+#if "docker-compose" in sys.argv[0]: - перехват в консоли по названию записи
 if USE_DOCKER:
     DATABASES = {
         "default": {
