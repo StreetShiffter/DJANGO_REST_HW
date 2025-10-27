@@ -2,15 +2,20 @@ FROM python:3.12-slim
 
 # Устанавливаем системные зависимости для компиляции пакетов из документации
 #каждой отдельной зависимости для установки через Debian/Ubuntu
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
-    libc6-dev \
-    libpq-dev \
-    libjpeg-dev \
-    zlib1g-dev \
-    libpng-dev \
-    libfreetype6-dev \
-    && rm -rf /var/lib/apt/lists/*
+#нужны для slim версии python, т.к. там нет таких библиотек для зависимостей проекта
+#собирай и смотри что еще надо поставить
+
+#RUN apt-get update && apt-get install -y --no-install-recommends \
+#    gcc \
+#    libc6-dev \
+#    libpq-dev \
+#    libjpeg-dev \
+#    zlib1g-dev \
+#    libpng-dev \
+#    libfreetype6-dev \
+#    #Удаляем кэш APT
+#    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && pip install poetry #современный способ обновления библиотек
 
 # Рабочая директория
 WORKDIR /DJANGO_REST_HW

@@ -261,5 +261,16 @@ docker-compose down
 docker-compose logs
 docker-compose ps
 ```
+
+!!! ПРИМЕНЕНИЕ МИГРАЦИЙ НА СЕРВЕРЕ ТОЛЬКО ВРУЧНУЮ !!!
+```
+1 - ssh your_user@your_server_ip - вход на сервер
+2 - cd /path/to/your/django-project/ - переходим в папку с проектом
+3 - docker-compose ps - проверка запущеных контейнеров
+4 - docker-compose exec web python manage.py migrate --noinput - миграции в терминале
+# Важно ставить флаг --noinput  для игнорирования интерактивного ввода подтверждения
+```
+или через GitHub Actions
+
 📄 Лицензия
 Этот проект лицензирован по MIT License — подробнее см. файл LICENSE.

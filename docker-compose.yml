@@ -4,7 +4,9 @@ services:
 # ПРОПИСЫВАЕМ DJANGO приложение
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+#    command: python manage.py runserver 0.0.0.0:8000
+    command: sh -c "python manage.py makemigrations && python manage.py migrate 
+             && python manage.py runserver 0.0.0.0:8000"
     # тома для сохранения данных вне контейнера
     volumes:
       - .:/DJANGO_REST_HW
