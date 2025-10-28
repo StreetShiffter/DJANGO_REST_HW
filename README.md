@@ -192,7 +192,7 @@ http://localhost:8000/users/list/(headers) Content-Type - application/json/
 {"refresh":"токен"} 
 ```
 
-### DOCKER
+### 🐳 DOCKER local
 ЭТАПЫ ЗАПУСКА КОНТЕЙНЕРОВ(при compose)
 1.*Пишем Dockerfile*
 2.*Пишем docker-compose.yml*
@@ -261,6 +261,38 @@ docker-compose down
 docker-compose logs
 docker-compose ps
 ```
+### 🐳 DOCKER server 🌐
+УСТАНОВКА DOCKER НА СЕРВЕР
+1. Установка всех библиотек и обновления(оф. документация)
+```
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+```
+2. Устанавливаем пакет Docker:
+```
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+
+3. Добавьте себя в группу docker (чтобы не использовать sudo):
+```sudo usermod -aG docker $USER```
+ВАЖНО - обязательно выйти из сессии *exit* и авторизоваться заново *ssh testadmin@0.0.0.0*
+4. Проверьте установку и проверть работу:
+```
+docker --version
+docker compose version
+docker run hello-world
+```
 
 !!! ПРИМЕНЕНИЕ МИГРАЦИЙ НА СЕРВЕРЕ ТОЛЬКО ВРУЧНУЮ !!!
 ```
@@ -275,10 +307,30 @@ docker-compose ps
 ПРИМЕР РАБОТЫ ДЕПЛОЯ ДЛЯ РАЗРАБОТКИ И В ПРОДАКШН:
 ![Пример деплоя](./media/yaml.jpg)
 
-ПОЛУЧЕНИЕ SSH ключа через консоль с пк(или ключ в папке /.ssh-.pub):
+ПОЛУЧЕНИЕ ПУБЛИЧНОГО SSH ключа через консоль с пк(или ключ в папке /.ssh-.pub)/ для связи моего пк и сервера:
 ```
 cat ~/.ssh/id_ed25519.pub
 ```
+
+СВЯЗКА СЕРВЕРА И GITHUB:
+1. Создаем ключ
+```ssh-keygen -t ed25519 -C "USEREMAIL"```
+2. Привязка ключа к github аккаунту 
+3. Проверка связки:
+```ssh -T git@github.com```
+4. Клонируем репозиторий:
+```git clone git@github.com:USERACCOUNT/USER_REPO.git```
+5. Переключение на нужную ветку:
+```
+cd USER_REPO
+git checkout feature_35
+```
+ВАЖНО - при последующем подключенни к ветке *cd ~/USER_REPO* мы остаемся в этой ветке НАВСЕГДА
+
+6. Создаем на ветке файл env:
+```nano .env```
+7. После добавления данных сохраняем и выходим: *Ctrl+O → Enter → Ctrl+X*
+
 Проваливаемся в ВМ и подлючаемся:
 ![Подключение к ВМ](./media/connect_BM.jpg)
 
@@ -308,9 +360,19 @@ sudo ufw enable
 ```sudo ufw status```
 7. Откройте порт 22 для SSH:
 ```sudo ufw allow 22/tcp```
+8. 
 Ожидаемый результат:
-    В результате выполнения команды вы должны увидеть, что порт 22 находится 
+    *В результате выполнения команды вы должны увидеть, что порт 22 находится 
     в состоянии ALLOW наряду с портами 80 и 443. Это означает, что ваш сервер
-    будет доступен для SSH-подключений, а также для веб-трафика.
+    будет доступен для SSH-подключений, а также для веб-трафика.*
+
+ВКЛЮЧЕНИЕ КОНТЕЙНЕРОВ
+1. Переходим в папку проекта:
+```cd ~/DJANGO_REST_HW```
+
+2. Если *studo* выключен, то используйте:
+```docker compose up -d --build```
+
+
 📄 Лицензия
 Этот проект лицензирован по MIT License — подробнее см. файл LICENSE.
