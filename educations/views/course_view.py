@@ -1,4 +1,4 @@
-from django.views.generic import ListView
+from django.views.generic import TemplateView
 from rest_framework.permissions import IsAuthenticated
 
 from educations.models import Course
@@ -9,8 +9,9 @@ from rest_framework import viewsets
 
 from users.permissions import IsOwnerOrModerator
 
-class HomeView(ListView):
-    template_name = 'educations/index.html'
+
+class HomeView(TemplateView):
+    template_name = 'home.html'
 
 class CourseViewSet(viewsets.ModelViewSet):
     """ViewSet-класс для вывода списка курсов и информации по одному объекту

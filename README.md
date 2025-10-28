@@ -332,6 +332,8 @@ git checkout feature_35
 2. ```git pull origin feature_35``` подтягиваем изменения
 3. ```docker compose down``` *ЕСЛИ КОНТЕЙНЕР БЫЛ ЗАПУЩЕН - ОСТАНАВЛИВАЕМ*
 4. ```docker-compose up -d --build``` *пересобираем контейнеры*
+ВАЖНО - при использовании *celery_beat* применяйте миграции ВРУЧНУЮ:
+```docker compose exec web python manage.py migrate```
 
 5. Создаем на ветке файл env:
 ```nano .env```
