@@ -236,7 +236,8 @@ docker rm my-django-app
 - и имя образа
 *(d settings ALLOWED_HOSTS = ['*'] для разработки)*
 ```
-docker run -d --name my-django-app -p 8000:8000 --env-file .env django_rest_hw
+docker run -d --name my-django-app -p 8000:8000 --env-file .env django_rest_hw # для проверки работы django 
+docker compose up -d --build # запускает все
 ```
 
 Команда повторного запуска контейнера
@@ -259,7 +260,8 @@ docker-compose down
 Просмотр логов и id всех контейнеров
 ```
 docker-compose logs
-docker-compose ps
+docker-compose ps -a
+docker compose ps
 ```
 ### 🐳 DOCKER server 🌐
 УСТАНОВКА DOCKER НА СЕРВЕР

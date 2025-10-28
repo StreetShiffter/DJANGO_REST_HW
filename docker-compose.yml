@@ -46,6 +46,8 @@ services:
     volumes:
       - .:/DJANGO_REST_HW
     #env_file не нужен, так как файл .env лежит рядом с docker-compose.yml
+    environment:
+      - USE_DOCKER=True #важный флаг переключения БД в settings
 
 # ПРОПИСЫВАЕМ redis
   redis:
