@@ -11,7 +11,7 @@ from users.permissions import IsOwnerOrModerator
 
 
 class HomeView(TemplateView):
-    template_name = 'educations/home.html'
+    template_name = 'educations/index.html'
 
 class CourseViewSet(viewsets.ModelViewSet):
     """ViewSet-класс для вывода списка курсов и информации по одному объекту
