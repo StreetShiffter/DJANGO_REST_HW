@@ -9,7 +9,7 @@ services:
     # тома для сохранения данных вне контейнера
     volumes:
       - .:/DJANGO_REST_HW
-      - static_volume:/DJANGO_REST_HW/static
+      - static_volume:/DJANGO_REST_HW/staticfiles
       - media_volume:/DJANGO_REST_HW/media
     ports:
       - "8000:8000"
