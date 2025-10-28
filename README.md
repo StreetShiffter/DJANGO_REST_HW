@@ -378,6 +378,9 @@ sudo ufw enable
 1. Переходим в папку проекта:
 ```cd ~/DJANGO_REST_HW```
 
+ЕСЛИ НУЖНО ПОДТЯНУТЬ ИЗМЕНЕНИЯ В ПРОЕКТ:
+```git pull origin feature_35```
+
 2. Если *studo* выключен, то используйте:
 ```docker compose up -d --build```
 
