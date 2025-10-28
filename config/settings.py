@@ -168,6 +168,8 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATICFILES_DIRS = (BASE_DIR / "static",)
+# Путь в файловой системе, куда collectstatic будет копировать все файлы (как в VOLUMES)
+STATIC_ROOT = "/DJANGO_REST_HW/static"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
