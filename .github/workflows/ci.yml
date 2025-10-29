@@ -84,6 +84,9 @@ jobs:
         run: poetry install --no-interaction
 
       - name: 🗃️ Применить миграции
+        env:
+          SECRET_KEY: "ci-test-secret-key-unsafe-but-ok-for-tests"
+          DEBUG: "True"
         run: poetry run python manage.py migrate --noinput
 
       - name: 🧪 Запустить тесты
