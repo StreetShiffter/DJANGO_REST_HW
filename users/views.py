@@ -1,8 +1,12 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, status, viewsets
 from rest_framework.filters import OrderingFilter
-from rest_framework.generics import (CreateAPIView, DestroyAPIView,
-                                     RetrieveUpdateAPIView, get_object_or_404)
+from rest_framework.generics import (
+    CreateAPIView,
+    DestroyAPIView,
+    RetrieveUpdateAPIView,
+    get_object_or_404,
+)
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -10,8 +14,7 @@ from rest_framework.views import APIView
 from educations.models import Course
 from educations.serializers import CourseSerializer, LessonSerializer
 from users.models import Payment, Subscription, User
-from users.serializers import (PaymentSerializer, UserProfileSerializer,
-                               UserSerializer)
+from users.serializers import PaymentSerializer, UserProfileSerializer, UserSerializer
 from users.services import process_course_payment, process_lesson_payment
 
 

@@ -6,8 +6,12 @@ from users.views import PayCourseAPIView, PayLessonAPIView
 from .apps import EducationsConfig
 from .models import Lesson
 from .serializers import LessonSerializer
-from .views import (CourseViewSet, HomeView, LessonCreateList,
-                    LessonRetrieveUpdateDestroy)
+from .views import (
+    CourseViewSet,
+    HomeView,
+    LessonCreateList,
+    LessonRetrieveUpdateDestroy,
+)
 
 router = DefaultRouter()
 router.register(r"courses", CourseViewSet, basename="course")
