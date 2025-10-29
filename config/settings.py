@@ -1,11 +1,10 @@
 import os
 import sys
 from datetime import timedelta
+from pathlib import Path
 
 from celery.schedules import crontab
 from dotenv import load_dotenv
-
-from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -173,8 +172,9 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-#
-#Настройки для тестирования, включая CI/CD
+
+
+# Настройки для тестирования, включая CI/CD
 if "test" in sys.argv or "pytest" in sys.modules:
     ALLOWED_HOSTS = ["testserver", "localhost", "127.0.0.1"]
 

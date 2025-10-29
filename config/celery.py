@@ -1,4 +1,5 @@
 import os
+
 from celery import Celery
 
 # Установите переменную окружения для настроек Django

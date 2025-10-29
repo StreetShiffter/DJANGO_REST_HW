@@ -1,16 +1,13 @@
 from django.urls import path
+from rest_framework.routers import DefaultRouter
 
 from users.views import PayCourseAPIView, PayLessonAPIView
+
 from .apps import EducationsConfig
-from rest_framework.routers import DefaultRouter
 from .models import Lesson
 from .serializers import LessonSerializer
-from .views import (
-    CourseViewSet,
-    LessonCreateList,
-    LessonRetrieveUpdateDestroy,
-    HomeView,
-)
+from .views import (CourseViewSet, HomeView, LessonCreateList,
+                    LessonRetrieveUpdateDestroy)
 
 router = DefaultRouter()
 router.register(r"courses", CourseViewSet, basename="course")

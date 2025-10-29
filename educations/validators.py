@@ -1,9 +1,10 @@
 import re
+
 from rest_framework import serializers
 
-
 # def CorrectVideoUrl(value):
-#     """Валидатор для проверки отношения видео к определенному ресурсу - использовать в сериализаторе отдельным полем"""
+#     """Валидатор для проверки отношения видео к определенному ресурсу - использовать
+#     в сериализаторе отдельным полем"""
 #     youtube_regex = r'(https?://)?(www\.|m\.)?(youtube\.com)/.+$'
 #
 #     if not re.match(youtube_regex, value):

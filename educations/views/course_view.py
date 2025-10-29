@@ -1,12 +1,11 @@
 from django.views.generic import TemplateView
+from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from educations.models import Course
 from educations.paginators import MyPagination
 from educations.serializers import CourseSerializer, CourseSerializerList
 from educations.tasks import send_mail_update_course
-from rest_framework import viewsets
-
 from users.permissions import IsOwnerOrModerator
 
 

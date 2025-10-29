@@ -1,6 +1,5 @@
 from rest_framework import permissions
 
-
 # class IsModerator(permissions.BasePermission):
 #     """Только модераторы могут читать и редактировать — но не создавать и не удалять."""
 #     def has_permission(self, request, view):
