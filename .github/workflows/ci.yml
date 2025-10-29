@@ -85,9 +85,6 @@ jobs:
       - name: 📥 Установить зависимости
         run: poetry install --no-interaction
 
-      - name: 🗃️ Применить миграции
-        run: poetry run python manage.py migrate --noinput
-
       - name: 🧪 Запустить тесты
         run: poetry run python manage.py test
 
