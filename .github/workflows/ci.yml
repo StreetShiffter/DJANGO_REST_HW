@@ -57,8 +57,10 @@ jobs:
   # 🧪 2. ТЕСТЫ: Django (зависит от линтера)
   # ───────────────────────────────────────
   test:
-    needs: lint  # ← запускать ТОЛЬКО если lint прошёл
+    needs: lint
     runs-on: ubuntu-latest
+    env:
+      DJANGO_SETTINGS_MODULE: config.settings_ci
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
@@ -68,7 +70,6 @@ jobs:
         with:
           python-version: '3.12'
 
-      # ─── POETRY (основной) ────────────────────────────
       - name: ⚡ Кэшировать зависимости Poetry
         uses: actions/cache@v4
         with:
@@ -84,15 +85,9 @@ jobs:
         run: poetry install --no-interaction
 
       - name: 🗃️ Применить миграции
-        env:
-          SECRET_KEY: "ci-test-secret-key-unsafe-but-ok-for-tests"
-          DEBUG: "True"
         run: poetry run python manage.py migrate --noinput
 
       - name: 🧪 Запустить тесты
-        env:
-          SECRET_KEY: "your-secret-key-for-tests"
-          DEBUG: "True"
         run: poetry run python manage.py test
 
       # ─── PIP (закомментирован) ────────────────────────

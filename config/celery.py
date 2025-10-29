@@ -7,7 +7,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 
 app = Celery("config")
 
-# Загрузите конфигурацию из settings.py с префиксом CELERY_
+# Загрузите конфигурацию из settings_ci.py с префиксом CELERY_
 app.config_from_object("django.conf:settings", namespace="CELERY")
 
 # Автоматически обнаруживайте задачи в приложениях
