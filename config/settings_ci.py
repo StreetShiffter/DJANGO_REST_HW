@@ -5,6 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "ci-test-secret-key-unsafe-but-ok"
 DEBUG = True
 ALLOWED_HOSTS = ["*"]
+ROOT_URLCONF = 'config.urls'
 
 # 🔑 Указываем, что кастомная модель User — основная
 AUTH_USER_MODEL = "users.User"
