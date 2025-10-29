@@ -183,6 +183,50 @@ if "test" in sys.argv:
         "django.contrib.auth.hashers.MD5PasswordHasher",  # Быстрее для тестов
     ]
 
+    # 🗃️ База данных
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+
+    LANGUAGE_CODE = "ru-ru"
+    TIME_ZONE = "UTC"
+    USE_I18N = True
+    USE_TZ = True
+
+    # 📦 Статика
+    STATIC_URL = "/static/"
+    STATICFILES_DIRS = []
+
+    # 📧 Email
+    EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
+
+    SECRET_KEY = "ci-test-secret-key-unsafe-but-ok"
+    DEBUG = True
+    ROOT_URLCONF = "config.urls"
+
+    # 🔑 Указываем, что кастомная модель User — основная
+    AUTH_USER_MODEL = "users.User"
+
+    # 🖼️ TEMPLATES — обязательно для админки
+    TEMPLATES = [
+        {
+            "BACKEND": "django.template.backends.django.DjangoTemplates",
+            "DIRS": [],
+            "APP_DIRS": True,
+            "OPTIONS": {
+                "context_processors": [
+                    "django.template.context_processors.debug",
+                    "django.template.context_processors.request",
+                    "django.contrib.auth.context_processors.auth",
+                    "django.contrib.messages.context_processors.messages",
+                ],
+            },
+        },
+    ]
+
 
 LOGGING = {
     "version": 1,

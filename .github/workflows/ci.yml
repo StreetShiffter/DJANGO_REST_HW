@@ -59,8 +59,9 @@ jobs:
   test:
     needs: lint
     runs-on: ubuntu-latest
+    # Удалил DJANGO_SETTINGS_MODULE: config.settings_ci
     env:
-      DJANGO_SETTINGS_MODULE: config.settings_ci
+      DJANGO_SETTINGS_MODULE:
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
@@ -154,7 +155,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 🔑 Настроить SSH
-        uses: webfactory/ssh-agent@v0.8.1
+        # Актуальная версия webfactory/ssh-agent@v0.9.0
+        uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
