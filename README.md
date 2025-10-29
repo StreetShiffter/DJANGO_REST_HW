@@ -401,7 +401,7 @@ sudo ufw enable
 3. на сервере созддаем новый ключ для GitHub ACTIONS:
 ```ssh-keygen -t ed25519 -C "agwzdushaz@gmail.com" -f ~/.ssh/id_ed25519_github_actions```
 и получите его из терминала
-```cat github_actions_key.pub```
+```cat ~/.ssh/id_ed25519_github_actions.pub```
 
 4. Добавляем секреты:
 - ssh ключ
