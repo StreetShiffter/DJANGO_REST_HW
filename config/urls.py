@@ -27,9 +27,9 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
     # Безопасное определение корня статики
-    static_root = getattr(settings, 'STATIC_ROOT', None)
+    static_root = getattr(settings, "STATIC_ROOT", None)
     if not static_root:
-        staticfiles_dirs = getattr(settings, 'STATICFILES_DIRS', [])
+        staticfiles_dirs = getattr(settings, "STATICFILES_DIRS", [])
         if staticfiles_dirs:
             static_root = staticfiles_dirs[0]
 
