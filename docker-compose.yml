@@ -19,8 +19,7 @@ services:
       - redis
     #env_file не нужен, т.к. он есть в образе dockerfile и  используешь load_dotenv() в коде
       #и файл .env попал в контейнер (через COPY или volumes).
-    environment:
-      - USE_DOCKER=True #важный флаг переключения БД в settings
+
 
 # ПРОПИСЫВАЕМ Celery
   worker:
@@ -47,7 +46,7 @@ services:
       - .:/DJANGO_REST_HW
     #env_file не нужен, так как файл .env лежит рядом с docker-compose.yml
     environment:
-      - USE_DOCKER=True #важный флаг переключения БД в settings
+      - USE_DOCKER=True #важный флаг переключения БД в settings(обязателен для BEAT)
 
 # ПРОПИСЫВАЕМ redis
   redis:

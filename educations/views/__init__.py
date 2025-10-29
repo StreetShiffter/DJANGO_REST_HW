@@ -5,5 +5,5 @@ __all__ = [
     "CourseViewSet",
     "LessonCreateList",
     "LessonRetrieveUpdateDestroy",
-    "HomeView"
+    "HomeView",
 ]

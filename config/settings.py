@@ -21,7 +21,6 @@ DEBUG = True if os.getenv("DEBUG") == "True" else False
 ALLOWED_HOSTS = ["*"]
 
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -105,32 +104,17 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# Определяем, запущено ли в Docker (по наличию специальной переменной)
-USE_DOCKER = os.getenv("USE_DOCKER", "False") == "True"
-#if "docker-compose" in sys.argv[0]: - перехват в консоли по названию записи
-if USE_DOCKER:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql_psycopg2",
-            "NAME": os.getenv("DB_NAME"),
-            "USER": os.getenv("DB_USER"),
-            "PASSWORD": os.getenv("DB_PASSWORD"),
-            "HOST": os.getenv("DB_HOST"),  # "db" (имя сервиса docker-compose из .env)
-            "PORT": os.getenv("DB_PORT"),
-        }
-    }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql_psycopg2",
-            "NAME": os.getenv("DB_NAME"),
-            "USER": os.getenv("DB_USER"),
-            "PASSWORD": os.getenv("DB_PASSWORD"),
-            "HOST": "localhost",  # локальный PostgreSQL
-            "PORT": os.getenv("DB_PORT"),
-        }
-    }
 
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "HOST": os.getenv("DB_HOST"),  # "db" (имя сервиса docker-compose из .env)
+        "PORT": os.getenv("DB_PORT"),
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -172,7 +156,7 @@ STATIC_URL = "static/"
 # STATIC_ROOT = "/DJANGO_REST_HW/static"
 
 STATICFILES_DIRS = [BASE_DIR / "static"]  # исходники статики
-STATIC_ROOT = BASE_DIR / "staticfiles"    # сюда collectstatic будет копировать всё
+STATIC_ROOT = BASE_DIR / "staticfiles"  # сюда collectstatic будет копировать всё
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
@@ -182,13 +166,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "users.User"  # Указываем кастомную модель для уинтификации
 #
-EMAIL_BACKEND = os.getenv('EMAIL_BACKEND') #Настройки почты
-EMAIL_HOST = os.getenv('EMAIL_HOST')
-EMAIL_PORT = os.getenv('EMAIL_PORT')
-EMAIL_USE_TLS = True if os.getenv('EMAIL_USE_TLS') == 'True' else False
-EMAIL_USE_SSL = True if os.getenv('EMAIL_USE_SSL') == 'True' else False
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND")  # Настройки почты
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = os.getenv("EMAIL_PORT")
+EMAIL_USE_TLS = True if os.getenv("EMAIL_USE_TLS") == "True" else False
+EMAIL_USE_SSL = True if os.getenv("EMAIL_USE_SSL") == "True" else False
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 #
@@ -243,8 +227,12 @@ LOGGING = {
 # Настройки Celery(верхние строки для работы без докера)
 # CELERY_BROKER_URL = "redis://localhost:6379/0"
 # CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
-CELERY_BROKER_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0') # Используем REDIS_URL из окружения
-CELERY_RESULT_BACKEND = os.getenv('REDIS_URL', 'redis://localhost:6379/0') # Используем REDIS_URL из окружения
+CELERY_BROKER_URL = os.getenv(
+    "REDIS_URL", "redis://localhost:6379/0"
+)  # Используем REDIS_URL из окружения
+CELERY_RESULT_BACKEND = os.getenv(
+    "REDIS_URL", "redis://localhost:6379/0"
+)  # Используем REDIS_URL из окружения
 
 # Используем eventlet на Windows
 CELERY_WORKER_POOL = "eventlet"
@@ -258,8 +246,8 @@ CELERY_TIMEZONE = TIME_ZONE
 
 # Настройки Celery Beat (планировщик)
 CELERY_BEAT_SCHEDULE = {
-    'deactivate-inactive-users-daily': {
-        'task': 'educations.tasks.deactivate_inactive_users',
-        'schedule': crontab(hour=2, minute=0),  # каждый день в 02:00
+    "deactivate-inactive-users-daily": {
+        "task": "educations.tasks.deactivate_inactive_users",
+        "schedule": crontab(hour=2, minute=0),  # каждый день в 02:00
     },
 }

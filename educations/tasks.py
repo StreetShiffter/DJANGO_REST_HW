@@ -17,14 +17,10 @@ def send_mail_update_course(course_id):
         return
 
     subscribers = Subscription.objects.filter(
-        course=course,
-        is_active=True
-    ).select_related('user')
+        course=course, is_active=True
+    ).select_related("user")
 
-    recipient_list = [
-        sub.user.email for sub in subscribers
-        if sub.user.email
-    ]
+    recipient_list = [sub.user.email for sub in subscribers if sub.user.email]
 
     if not recipient_list:
         return
@@ -40,9 +36,6 @@ def send_mail_update_course(course_id):
 def deactivate_inactive_users():
     """Блокировка пользователей, не заходивших более месяца"""
     one_month_ago = timezone.now() - timedelta(days=30)
-    inactive_users = User.objects.filter(
-        last_login__lt=one_month_ago,
-        is_active=True
-    )
+    inactive_users = User.objects.filter(last_login__lt=one_month_ago, is_active=True)
     count = inactive_users.update(is_active=False)
     print(f"Deactivated {count} inactive users.")
