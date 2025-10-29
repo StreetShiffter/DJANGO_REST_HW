@@ -194,13 +194,19 @@ http://localhost:8000/users/list/(headers) Content-Type - application/json/
 
 ### 🐳 DOCKER local
 ЭТАПЫ ЗАПУСКА КОНТЕЙНЕРОВ(при compose)
+
 1.*Пишем Dockerfile*
+
 2.*Пишем docker-compose.yml*
+
 3.*Выполняем сборку: docker-compose build*
+
 4.*Запускаем: docker-compose up -d*
+
     ИЛИ
-  *Можно унифицировать: docker-compose up -d --build* -
-    - Если образы для сервисов еще не созданы, они будут собраны перед запуском.
+  *Можно унифицировать: docker-compose up -d --build*
+
+- Если образы для сервисов еще не созданы, они будут собраны перед запуском.
 
 Команда для создания образа из докерфайла с присваиванием имени(-t)
 (важно что бы poetry lock и toml использовали одну версию пайтона)
@@ -245,7 +251,7 @@ docker compose up -d --build # запускает все
 docker start my-django-app
 ```
 
-РАБОТА С DOCKER COMPOSE
+                        🔍РАБОТА С DOCKER COMPOSE🔎
 
 Сборка образа на фоне(-d)
 ```
@@ -263,7 +269,7 @@ docker-compose logs
 docker-compose ps -a
 docker compose ps
 ```
-### 🐳 DOCKER server 🌐
+### 🐳 DOCKER server 🌍
 УСТАНОВКА DOCKER НА СЕРВЕР
 1. Установка всех библиотек и обновления(оф. документация)
 ```
@@ -314,7 +320,7 @@ docker run hello-world
 cat ~/.ssh/id_ed25519.pub
 ```
 
-СВЯЗКА СЕРВЕРА И GITHUB:
+                            📤СВЯЗКА СЕРВЕРА И GITHUB📥
 1. Создаем ключ
 ```ssh-keygen -t ed25519 -C "USEREMAIL"```
 2. Привязка ключа к github аккаунту 
@@ -344,7 +350,7 @@ git checkout feature_35
 Проваливаемся в ВМ и подлючаемся:
 ![Подключение к ВМ](./media/connect_BM.jpg)
 
-НАСТРОЙКА ВМ:
+                            🛠️НАСТРОЙКА ВМ🛠️
 1. Обновление списка пакетов:
 ```
 sudo apt update
@@ -376,7 +382,7 @@ sudo ufw enable
     в состоянии ALLOW наряду с портами 80 и 443. Это означает, что ваш сервер
     будет доступен для SSH-подключений, а также для веб-трафика.*
 
-ВКЛЮЧЕНИЕ КОНТЕЙНЕРОВ
+                        📦ВКЛЮЧЕНИЕ КОНТЕЙНЕРОВ📦
 1. Переходим в папку проекта:
 ```cd ~/DJANGO_REST_HW```
 
@@ -386,6 +392,54 @@ sudo ufw enable
 2. Если *studo* выключен, то используйте:
 ```docker compose up -d --build```
 
+#### 💻 НАСТРОЙКА CI/CD в Github ACTIONS ☁️ 
+
+1. Заходим в настройки проекта на GitHub и выберавем *Secrets and variables*
+
+2. Добавляем новый секрет по кнопке *New repository secret* 
+
+3. на сервере созддаем новый ключ для GitHub ACTIONS:
+```ssh-keygen -t ed25519 -C "github-actions@your-repo" -f github_actions_key```
+и получите его из терминала
+```cat github_actions_key.pub```
+
+4. Добавляем секреты:
+- ssh ключ
+- ip вашего сервера
+- ssh user (вписать root)
+- папка деплоя (/root/ваша папка на сервере - введите dir или ls на сервере)
+- DOCKER_USERNAME(ваш юзернейм на dockerhub)
+- DOCKER_PASSWORD(подготовить ваш access token)
+1. В dockerhub в настройках профиля ищем *Account settings*:
+![Подключение к DH](./media/docker.jpg)
+
+2.Ищем строку *Personal access tokens*
+![Подключение к DH](./media/docker2.jpg)
+
+3. Выбираем *generate new token*
+
+4. Скопируйте токен (ОН ДОСТУПЕН ОДИН РАЗ)
+5. Добавьте в Github secrets
+
+НАСТРОЙКА В ПРОЕКТЕ
+1. Создаем путь и файл в корне *.github/workflows/ci.yml*
+ВАЖНО ДЛЯ ТЕСТОВ ИСПОЛЬЗОВАНИЕ ОТДЕЛЬНОЙ СУБД в Settings (если в проекте используется postgres):
+```
+if "test" in sys.argv or "pytest" in sys.modules:
+    ALLOWED_HOSTS = ["testserver", "localhost", "127.0.0.1"]
+
+    # Дополнительные настройки для тестов
+    PASSWORD_HASHERS = [
+        "django.contrib.auth.hashers.MD5PasswordHasher",  # Быстрее для тестов
+    ]
+
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": ":memory:",
+        }
+    }
+```
 
 📄 Лицензия
 Этот проект лицензирован по MIT License — подробнее см. файл LICENSE.

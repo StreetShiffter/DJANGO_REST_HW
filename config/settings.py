@@ -174,14 +174,21 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 #
-
-if "test" in sys.argv:
+#Настройки для тестирования, включая CI/CD
+if "test" in sys.argv or "pytest" in sys.modules:
     ALLOWED_HOSTS = ["testserver", "localhost", "127.0.0.1"]
 
     # Дополнительные настройки для тестов
     PASSWORD_HASHERS = [
         "django.contrib.auth.hashers.MD5PasswordHasher",  # Быстрее для тестов
     ]
+
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": ":memory:",
+        }
+    }
 
 LOGGING = {
     "version": 1,
