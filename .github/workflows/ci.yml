@@ -59,7 +59,7 @@ jobs:
   test:
     needs: lint
     runs-on: ubuntu-latest
-    # Удалил DJANGO_SETTINGS_MODULE: config.settings_ci
+    # DJANGO_SETTINGS_MODULE явно определяет настройки проекта, а в них sys.argv содержит 'test'
     env:
       DJANGO_SETTINGS_MODULE:config.settings
     steps:
