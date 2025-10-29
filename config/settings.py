@@ -151,11 +151,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = "static/"
-# STATICFILES_DIRS = (BASE_DIR / "static",)
-# # Путь в файловой системе, куда collectstatic будет копировать все файлы (как в VOLUMES)
-# STATIC_ROOT = "/DJANGO_REST_HW/static"
 
 STATICFILES_DIRS = [BASE_DIR / "static"]  # исходники статики
+# # Путь в файловой системе, куда collectstatic будет копировать все файлы (как в VOLUMES)
 STATIC_ROOT = BASE_DIR / "staticfiles"  # сюда collectstatic будет копировать всё
 
 MEDIA_URL = "/media/"
