@@ -23,15 +23,15 @@ urlpatterns = [
     ),
 ]
 
-# if settings.DEBUG:
-#     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-#     urlpatterns += static(
-#         settings.STATIC_URL,
-#         document_root=settings.STATIC_ROOT or settings.STATICFILES_DIRS[0],
-#     )
 if settings.DEBUG:
-    urlpatterns += static(
-        settings.STATIC_URL,
-        document_root=settings.STATIC_ROOT
-        or (settings.STATICFILES_DIRS[0] if settings.STATICFILES_DIRS else None),
-    )
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+    # Безопасное определение корня статики
+    static_root = getattr(settings, 'STATIC_ROOT', None)
+    if not static_root:
+        staticfiles_dirs = getattr(settings, 'STATICFILES_DIRS', [])
+        if staticfiles_dirs:
+            static_root = staticfiles_dirs[0]
+
+    if static_root:
+        urlpatterns += static(settings.STATIC_URL, document_root=static_root)
