@@ -150,7 +150,7 @@ jobs:
   # ───────────────────────────────────────
   deploy-ssh:
     needs: [test, security]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/feature_35_Nginx_GithubActions'
     runs-on: ubuntu-latest
     steps:
       - name: 🔑 Настроить SSH
@@ -209,7 +209,7 @@ jobs:
   # ───────────────────────────────────────
 #  deploy-docker:
 #    needs: [test, security]
-#    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+#    if: github.event_name == 'push' && github.ref == 'refs/heads/feature_35_Nginx_GithubActions'
 #    runs-on: ubuntu-latest
 #    steps:
 #      - name: 📥 Checkout
