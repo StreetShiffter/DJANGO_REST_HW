@@ -400,8 +400,25 @@ sudo ufw enable
 
 3. на сервере созддаем новый ключ для GitHub ACTIONS:
 ```ssh-keygen -t ed25519 -C "agwzdushaz@gmail.com" -f ~/.ssh/id_ed25519_github_actions```
-и получите его из терминала
+и получите его из терминала для проверки:
 ```cat ~/.ssh/id_ed25519_github_actions.pub```
+
+4. Добавить в папку *~/.ssh/authorized_keys* для авторизации:
+```
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+cat ~/.ssh/id_ed25519_github_actions.pub >> ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+```
+
+5. Скопируйте содержимое приватного ключа в GitHub Secrets:
+```cat ~/.ssh/id_ed25519_github_actions```
+
+Увидите строку:
+![Подключение к DH](./media/docker3.jpg)
+
+Скопируйте весь вывод для секрета (начинается с -----BEGIN OPENSSH PRIVATE KEY-----)
+
 
 4. Добавляем секреты:
 - ssh ключ
