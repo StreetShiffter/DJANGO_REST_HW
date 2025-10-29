@@ -61,7 +61,7 @@ jobs:
     runs-on: ubuntu-latest
     # DJANGO_SETTINGS_MODULE явно определяет настройки проекта, а в них sys.argv содержит 'test'
     env:
-      DJANGO_SETTINGS_MODULE:config.settings
+      DJANGO_SETTINGS_MODULE: config.settings
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
