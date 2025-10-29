@@ -175,7 +175,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 # Настройки для тестирования, включая CI/CD
-if "test" in sys.argv or "pytest" in sys.modules:
+if "test" in sys.argv:
     ALLOWED_HOSTS = ["testserver", "localhost", "127.0.0.1"]
 
     # Дополнительные настройки для тестов
@@ -183,12 +183,6 @@ if "test" in sys.argv or "pytest" in sys.modules:
         "django.contrib.auth.hashers.MD5PasswordHasher",  # Быстрее для тестов
     ]
 
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": ":memory:",
-        }
-    }
 
 LOGGING = {
     "version": 1,
