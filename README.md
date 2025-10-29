@@ -440,6 +440,13 @@ if "test" in sys.argv or "pytest" in sys.modules:
         }
     }
 ```
+2. При пуше подтверждаем пуш workflows:
+```
+git add .
+git commit -m "Test CI"
+git remote set-url origin git@github.com:StreetShiffter/DJANGO_REST_HW.git
+git push
+```
 
 📄 Лицензия
 Этот проект лицензирован по MIT License — подробнее см. файл LICENSE.

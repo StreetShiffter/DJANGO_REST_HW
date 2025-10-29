@@ -242,15 +242,15 @@ jobs:
           # Добавьте другие секреты, если нужно:
           # DATABASE_URL: ${{ secrets.DATABASE_URL }}
           # ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
-          run: |
-            ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} << EOF
-              docker stop my-django-app || true
-              docker rm my-django-app || true
-              docker run -d \
-                --name my-django-app \
-                --restart unless-stopped \
-                -p 8000:8000 \
-                -e SECRET_KEY="$SECRET_KEY" \
-                -e DEBUG="False" \
-                "$DOCKER_IMAGE"
-            EOF
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} << EOF
+            docker stop my-django-app || true
+            docker rm my-django-app || true
+            docker run -d \
+              --name my-django-app \
+              --restart unless-stopped \
+              -p 8000:8000 \
+              -e SECRET_KEY="$SECRET_KEY" \
+              -e DEBUG="False" \
+              "$DOCKER_IMAGE"
+          EOF
