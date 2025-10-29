@@ -242,7 +242,6 @@ jobs:
           # Добавьте другие секреты, если нужно:
           # DATABASE_URL: ${{ secrets.DATABASE_URL }}
           # ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
-          #
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} << EOF
             docker stop my-django-app || true
