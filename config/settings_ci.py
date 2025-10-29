@@ -9,6 +9,23 @@ DATABASES = {
     }
 }
 
+INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "educations",
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "users",
+    "django_filters",
+    "drf_spectacular",
+    "django_celery_beat",
+    # "corsheaders",
+]
+
 # Отключаем статику, если не нужна
 STATICFILES_DIRS = []
 
