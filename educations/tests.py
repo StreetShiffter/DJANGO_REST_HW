@@ -1,3 +1,4 @@
+from django.apps import config
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from rest_framework import status
@@ -7,7 +8,6 @@ from educations.models import Course, Lesson
 from users.models import Subscription
 
 User = get_user_model()
-
 
 class LessonCRUDTestCase(APITestCase):
     """Тесты для CRUD операций с уроками"""
