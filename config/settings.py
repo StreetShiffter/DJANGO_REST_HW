@@ -183,7 +183,7 @@ if "test" in sys.argv:
         "django.contrib.auth.hashers.MD5PasswordHasher",  # Быстрее для тестов
     ]
 
-    # 🗃️ База данных
+    # 🗃️ База данных - для тестов стоковая
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -203,6 +203,7 @@ if "test" in sys.argv:
     # 📧 Email
     EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 
+    # ПРОИЗВОЛЬНЫЙ КЛЮЧ ДЛЯ ТЕСТОВ
     SECRET_KEY = "ci-test-secret-key-unsafe-but-ok"
     DEBUG = True
     ROOT_URLCONF = "config.urls"
