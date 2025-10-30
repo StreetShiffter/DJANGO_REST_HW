@@ -275,18 +275,18 @@ jobs:
           EOF
 
 
-       ─── АЛЬТЕРНАТИВА: деплой через pip ───────────────
-       - name: 🔄 Деплой через pip (закомментирован)
-         run: |
-           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} << EOF
-             cd ${{ secrets.DEPLOY_DIR }}
-             python3 -m venv venv
-             source venv/bin/activate
-             pip install -r requirements.txt
-             python manage.py migrate --noinput
-             python manage.py collectstatic --noinput
-             sudo systemctl restart myapp.service
-           EOF
+#       ─── АЛЬТЕРНАТИВА: деплой через pip ───────────────
+#       - name: 🔄 Деплой через pip (закомментирован)
+#         run: |
+#           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} << EOF
+#             cd ${{ secrets.DEPLOY_DIR }}
+#             python3 -m venv venv
+#             source venv/bin/activate
+#             pip install -r requirements.txt
+#             python manage.py migrate --noinput
+#             python manage.py collectstatic --noinput
+#             sudo systemctl restart myapp.service
+#           EOF
 
 
   # ───────────────────────────────────────
