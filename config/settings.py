@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv()  # ИСПОЛЬЗОВАТЬ ДАННЫЕ ИЗ ПЕРЕМЕННОГО ОКРУЖЕНИЯ ИЗ ФАЙЛА .ENV
+load_dotenv(override=True)  # ИСПОЛЬЗОВАТЬ ДАННЫЕ ИЗ ПЕРЕМЕННОГО ОКРУЖЕНИЯ ИЗ ФАЙЛА .ENV
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -104,16 +104,6 @@ WSGI_APPLICATION = "config.wsgi.application"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql_psycopg2",
-#         "NAME": os.getenv("DB_NAME"),
-#         "USER": os.getenv("DB_USER"),
-#         "PASSWORD": os.getenv("DB_PASSWORD"),
-#         "HOST": os.getenv("DB_HOST"),  # "db" (имя сервиса docker-compose из .env)
-#         "PORT": os.getenv("DB_PORT"),
-#     }
-# }
 if "docker-compose" in sys.argv[0]:
     DATABASES = {
         "default": {
@@ -136,10 +126,6 @@ else:
             "PORT": os.getenv("DB_PORT"),
         }
     }
-
-    SECRET_KEY = os.getenv("SECRET_KEY")
-    # для обработки запросов URL в тестах:
-    ROOT_URLCONF = "config.urls"
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
