@@ -239,7 +239,7 @@ jobs:
 
       - name: 📤 Копировать код на сервер
         run: |
-          rsync -avz \
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no -o IdentitiesOnly=yes" \
             --exclude='.git/' \
             --exclude='__pycache__/' \
             --exclude='*.pyc' \
