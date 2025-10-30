@@ -394,12 +394,12 @@ sudo ufw enable
 
 #### 💻 НАСТРОЙКА CI/CD в Github ACTIONS ☁️ 
 
-1. Заходим в настройки проекта на GitHub и выберавем *Secrets and variables*
+1. Заходим в настройки проекта на GitHub и выбираем *Secrets and variables*
 
 2. Добавляем новый секрет по кнопке *New repository secret* 
 
-3. на сервере созддаем новый ключ для GitHub ACTIONS:
-```ssh-keygen -t ed25519 -C "agwzdushaz@gmail.com" -f ~/.ssh/id_ed25519_github_actions```
+3. на сервере создаем новый ключ для GitHub ACTIONS:
+```ssh-keygen -t ed25519 -C "ВАШ_EMAIL" -f ~/.ssh/id_ed25519_github_actions```
 и получите его из терминала для проверки:
 ```cat ~/.ssh/id_ed25519_github_actions.pub```
 
@@ -442,7 +442,8 @@ chmod 600 ~/.ssh/authorized_keys
 1. Создаем путь и файл в корне *.github/workflows/ci.yml*
 ВАЖНО ДЛЯ ТЕСТОВ ИСПОЛЬЗОВАНИЕ ОТДЕЛЬНОЙ СУБД в Settings (если в проекте используется postgres):
 ```
-if "test" in sys.argv or "pytest" in sys.modules:
+# Настройки для тестирования, включая CI/CD
+if "test" in sys.argv:
     ALLOWED_HOSTS = ["testserver", "localhost", "127.0.0.1"]
 
     # Дополнительные настройки для тестов
@@ -450,12 +451,50 @@ if "test" in sys.argv or "pytest" in sys.modules:
         "django.contrib.auth.hashers.MD5PasswordHasher",  # Быстрее для тестов
     ]
 
+    # 🗃️ База данных - для тестов стоковая
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
-            "NAME": ":memory:",
+            "NAME": BASE_DIR / "db.sqlite3",
         }
     }
+
+    LANGUAGE_CODE = "ru-ru"
+    TIME_ZONE = "UTC"
+    USE_I18N = True
+    USE_TZ = True
+
+    # 📦 Статика
+    STATIC_URL = "/static/"
+    STATICFILES_DIRS = []
+
+    # 📧 Email
+    EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
+
+    # ПРОИЗВОЛЬНЫЙ КЛЮЧ ДЛЯ ТЕСТОВ
+    SECRET_KEY = "ci-test-secret-key-unsafe-but-ok"
+    DEBUG = True
+    ROOT_URLCONF = "config.urls"
+
+    # 🔑 Указываем, что кастомная модель User — основная
+    AUTH_USER_MODEL = "users.User"
+
+    # 🖼️ TEMPLATES — обязательно для админки
+    TEMPLATES = [
+        {
+            "BACKEND": "django.template.backends.django.DjangoTemplates",
+            "DIRS": [],
+            "APP_DIRS": True,
+            "OPTIONS": {
+                "context_processors": [
+                    "django.template.context_processors.debug",
+                    "django.template.context_processors.request",
+                    "django.contrib.auth.context_processors.auth",
+                    "django.contrib.messages.context_processors.messages",
+                ],
+            },
+        },
+    ]
 ```
 2. При пуше подтверждаем пуш workflows:
 ```

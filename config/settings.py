@@ -104,16 +104,38 @@ WSGI_APPLICATION = "config.wsgi.application"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": os.getenv("DB_NAME"),
-        "USER": os.getenv("DB_USER"),
-        "PASSWORD": os.getenv("DB_PASSWORD"),
-        "HOST": os.getenv("DB_HOST"),  # "db" (имя сервиса docker-compose из .env)
-        "PORT": os.getenv("DB_PORT"),
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql_psycopg2",
+#         "NAME": os.getenv("DB_NAME"),
+#         "USER": os.getenv("DB_USER"),
+#         "PASSWORD": os.getenv("DB_PASSWORD"),
+#         "HOST": os.getenv("DB_HOST"),  # "db" (имя сервиса docker-compose из .env)
+#         "PORT": os.getenv("DB_PORT"),
+#     }
+# }
+if "docker-compose" in sys.argv[0]:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "NAME": os.getenv("DB_NAME"),
+            "USER": os.getenv("DB_USER"),
+            "PASSWORD": os.getenv("DB_PASSWORD"),
+            "HOST": os.getenv("DB_HOST"),
+            "PORT": os.getenv("DB_PORT"),
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "NAME": os.getenv("DB_NAME"),
+            "USER": os.getenv("DB_USER"),
+            "PASSWORD": os.getenv("DB_PASSWORD"),
+            "HOST": "localhost",
+            "PORT": os.getenv("DB_PORT"),
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -175,58 +197,58 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 # Настройки для тестирования, включая CI/CD
-if "test" in sys.argv:
-    ALLOWED_HOSTS = ["testserver", "localhost", "127.0.0.1"]
-
-    # Дополнительные настройки для тестов
-    PASSWORD_HASHERS = [
-        "django.contrib.auth.hashers.MD5PasswordHasher",  # Быстрее для тестов
-    ]
-
-    # 🗃️ База данных - для тестов стоковая
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
-
-    LANGUAGE_CODE = "ru-ru"
-    TIME_ZONE = "UTC"
-    USE_I18N = True
-    USE_TZ = True
-
-    # 📦 Статика
-    STATIC_URL = "/static/"
-    STATICFILES_DIRS = []
-
-    # 📧 Email
-    EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
-
-    # ПРОИЗВОЛЬНЫЙ КЛЮЧ ДЛЯ ТЕСТОВ
-    SECRET_KEY = "ci-test-secret-key-unsafe-but-ok"
-    DEBUG = True
-    ROOT_URLCONF = "config.urls"
-
-    # 🔑 Указываем, что кастомная модель User — основная
-    AUTH_USER_MODEL = "users.User"
-
-    # 🖼️ TEMPLATES — обязательно для админки
-    TEMPLATES = [
-        {
-            "BACKEND": "django.template.backends.django.DjangoTemplates",
-            "DIRS": [],
-            "APP_DIRS": True,
-            "OPTIONS": {
-                "context_processors": [
-                    "django.template.context_processors.debug",
-                    "django.template.context_processors.request",
-                    "django.contrib.auth.context_processors.auth",
-                    "django.contrib.messages.context_processors.messages",
-                ],
-            },
-        },
-    ]
+# if "test" in sys.argv:
+#     ALLOWED_HOSTS = ["testserver", "localhost", "127.0.0.1"]
+#
+#     # Дополнительные настройки для тестов
+#     PASSWORD_HASHERS = [
+#         "django.contrib.auth.hashers.MD5PasswordHasher",  # Быстрее для тестов
+#     ]
+#
+#     # 🗃️ База данных - для тестов стоковая
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.sqlite3",
+#             "NAME": BASE_DIR / "db.sqlite3",
+#         }
+#     }
+#
+#     LANGUAGE_CODE = "ru-ru"
+#     TIME_ZONE = "UTC"
+#     USE_I18N = True
+#     USE_TZ = True
+#
+#     # 📦 Статика
+#     STATIC_URL = "/static/"
+#     STATICFILES_DIRS = []
+#
+#     # 📧 Email
+#     EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
+#
+#     # ПРОИЗВОЛЬНЫЙ КЛЮЧ ДЛЯ ТЕСТОВ
+#     SECRET_KEY = "ci-test-secret-key-unsafe-but-ok"
+#     DEBUG = True
+#     ROOT_URLCONF = "config.urls"
+#
+#     # 🔑 Указываем, что кастомная модель User — основная
+#     AUTH_USER_MODEL = "users.User"
+#
+#     # 🖼️ TEMPLATES — обязательно для админки
+#     TEMPLATES = [
+#         {
+#             "BACKEND": "django.template.backends.django.DjangoTemplates",
+#             "DIRS": [],
+#             "APP_DIRS": True,
+#             "OPTIONS": {
+#                 "context_processors": [
+#                     "django.template.context_processors.debug",
+#                     "django.template.context_processors.request",
+#                     "django.contrib.auth.context_processors.auth",
+#                     "django.contrib.messages.context_processors.messages",
+#                 ],
+#             },
+#         },
+#     ]
 
 
 LOGGING = {
