@@ -288,14 +288,8 @@ jobs:
 
       - name: 📤 Копировать код на сервер
         run: |
-          rsync -avz -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -o IdentitiesOnly=yes" \
+          rsync -avz -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
             --exclude='.git/' \
-            --exclude='__pycache__/' \
-            --exclude='*.pyc' \
-            --exclude='.github/' \
-            --exclude='.env' \
-            --exclude='poetry.lock' \
-            --exclude='pyproject.toml' \
             . ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }}:${{ secrets.DEPLOY_DIR }}
 
       - name: 🔄 Запустить деплой на сервере (Poetry)
