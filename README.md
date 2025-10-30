@@ -432,7 +432,7 @@ sudo chmod 600 /home/вашеимяадмина/.ssh/authorized_keys
 - SSH_KNOWN_HOSTS (Отпечаток хоста)
 - ip вашего сервера
 - ssh user (вписать root)
-- папка деплоя (/root/ваша папка на сервере - введите dir или ls на сервере)
+- DEPLOY_DIR папка деплоя (/root/ваша папка на сервере - введите dir или ls на сервере)
 
 - DOCKER_USERNAME(ваш юзернейм на dockerhub)
 - DOCKER_PASSWORD(подготовить ваш access token)

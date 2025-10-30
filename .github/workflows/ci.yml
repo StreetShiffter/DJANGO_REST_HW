@@ -231,6 +231,12 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_KNOWN_HOSTS }}" >> ~/.ssh/known_hosts
 
+      - name: 🔍 Debug SSH key
+        run: |
+          echo "Key preview (first 100 chars):"
+          echo "${{ secrets.SSH_KEY }}" | head -c 100
+          echo "..."
+
       - name: 📤 Копировать код на сервер
         run: |
           rsync -avz \
