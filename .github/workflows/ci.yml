@@ -249,7 +249,7 @@ jobs:
             --exclude='pyproject.toml' \
             . ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }}:${{ secrets.DEPLOY_DIR }}
 
-      - name: 🔄 Запустить деплой на сервере (Poetry)
+      - name: 🔄 Запустить деплой на сервере(Poetry)
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} << EOF
             cd ${{ secrets.DEPLOY_DIR }}
