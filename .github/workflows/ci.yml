@@ -56,92 +56,23 @@ jobs:
   # ───────────────────────────────────────
   # 🧪 2. ТЕСТЫ: Django (зависит от линтера)
   # ───────────────────────────────────────
-#  test:
-#    needs: lint
-#    runs-on: ubuntu-latest
-#    # DJANGO_SETTINGS_MODULE явно определяет настройки проекта, а в них sys.argv содержит 'test'
-#    env:
-#      DJANGO_SETTINGS_MODULE: config.settings
-#    steps:
-#      - name: 📥 Checkout
-#        uses: actions/checkout@v4
-#
-#      - name: 🐍 Установить Python
-#        uses: actions/setup-python@v5
-#        with:
-#          python-version: '3.12'
-#
-#      - name: ⚡ Кэшировать зависимости Poetry
-#        uses: actions/cache@v4
-#        with:
-#          path: ~/.cache/pypoetry
-#          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
-#          restore-keys: |
-#            ${{ runner.os }}-poetry-
-#
-#      - name: 📦 Установить Poetry
-#        run: pip install poetry
-#
-#      - name: 📥 Установить зависимости
-#        run: poetry install --no-interaction
-#
-#      - name: 🧪 Запустить тесты
-#        run: poetry run python manage.py test
-
-      # ─── PIP (закомментирован) ────────────────────────
-      # - name: ⚡ Кэшировать pip
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: ~/.cache/pip
-      #     key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-pip-
-      #
-      # - name: 📦 Установить зависимости через pip
-      #   run: |
-      #     python -m pip install --upgrade pip
-      #     pip install -r requirements.txt
-      #
-      # - name: 🗃️ Миграции (pip)
-      #   run: python manage.py migrate --noinput
-      #
-      # - name: 🧪 Тесты (pip)
-      #   run: python manage.py test
+  # быстрые тесты SQLite
   test:
     needs: lint
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          POSTGRES_DB: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_HOST: localhost
-          POSTGRES_PORT: 5432
-          REDIS_HOST: localhost
-          REDIS_PORT: 6379
-          REDIS_DB: 0
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd="pg_isready -U postgres"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
+    # DJANGO_SETTINGS_MODULE явно определяет настройки проекта, а в них sys.argv содержит 'test'
+    env:
+      DJANGO_SETTINGS_MODULE: config.settings
     steps:
-      - name: Checkout
+      - name: 📥 Checkout
         uses: actions/checkout@v4
 
-      - name:  Установить Python
+      - name: 🐍 Установить Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Кэшировать зависимости Poetry
+      - name: ⚡ Кэшировать зависимости Poetry
         uses: actions/cache@v4
         with:
           path: ~/.cache/pypoetry
@@ -149,29 +80,100 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-poetry-
 
-      - name: Установить Poetry
+      - name: 📦 Установить Poetry
         run: pip install poetry
 
-      - name: Установить зависимости
+      - name: 📥 Установить зависимости
         run: poetry install --no-interaction
 
-      - name: Wait for PostgreSQL
-        run: |
-          until pg_isready -h localhost -p 5432 -U postgres; do
-          echo "Waiting for PostgreSQL..."
-          sleep 1
-          done
+      - name: 🧪 Запустить тесты
+        run: poetry run python manage.py test
 
-      - name: Применить миграции и Запустить тесты
-        env:
-          SECRET_KEY: test123
-          DB_NAME: postgres
-          DB_USER: postgres
-          DB_PASSWORD: postgres
-          DB_PORT: 5432
-        run: |
-          poetry run python manage.py migrate --noinput
-          poetry run python manage.py test
+#  test:
+#    needs: lint
+#    runs-on: ubuntu-latest
+#
+#    services:
+#      postgres:
+#        image: postgres:15
+#        env:
+#          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+#          POSTGRES_DB: postgres
+#          POSTGRES_USER: postgres
+#          POSTGRES_PASSWORD: postgres
+#          POSTGRES_HOST: localhost
+#          POSTGRES_PORT: 5432
+#          REDIS_HOST: localhost
+#          REDIS_PORT: 6379
+#          REDIS_DB: 0
+#        ports:
+#          - 5432:5432
+#        options: >-
+#          --health-cmd="pg_isready -U postgres"
+#          --health-interval=10s
+#          --health-timeout=5s
+#          --health-retries=5
+#
+#    steps:
+#      - name: 📥 Checkout
+#        uses: actions/checkout@v4
+#
+#      - name:  🐍 Установить Python
+#        uses: actions/setup-python@v5
+#        with:
+#          python-version: '3.12'
+#
+#      - name: 💭 Кэшировать зависимости Poetry
+#        uses: actions/cache@v4
+#        with:
+#          path: ~/.cache/pypoetry
+#          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+#          restore-keys: |
+#            ${{ runner.os }}-poetry-
+#
+#      - name: 🔗 Установить Poetry
+#        run: pip install poetry
+#
+#      - name: 📦 Установить зависимости
+#        run: poetry install --no-interaction
+#
+#      - name: 🔄 Wait for PostgreSQL
+#        run: |
+#          until pg_isready -h localhost -p 5432 -U postgres; do
+#          echo "Waiting for PostgreSQL..."
+#          sleep 1
+#          done
+#
+#      - name: 🗃️ Применить миграции и запустить тесты 🧪
+#        env:
+#          SECRET_KEY: test123
+#          DB_NAME: postgres
+#          DB_USER: postgres
+#          DB_PASSWORD: postgres
+#          DB_PORT: 5432
+#        run: |
+#          poetry run python manage.py migrate --noinput
+#          poetry run python manage.py test
+
+  # ─── PIP (закомментирован) ────────────────────────
+  # - name: ⚡ Кэшировать pip
+  #   uses: actions/cache@v4
+  #   with:
+  #     path: ~/.cache/pip
+  #     key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+  #     restore-keys: |
+  #       ${{ runner.os }}-pip-
+  #
+  # - name: 📦 Установить зависимости через pip
+  #   run: |
+  #     python -m pip install --upgrade pip
+  #     pip install -r requirements.txt
+  #
+  # - name: 🗃️ Миграции (pip)
+  #   run: python manage.py migrate --noinput
+  #
+  # - name: 🧪 Тесты (pip)
+  #   run: python manage.py test
   # ───────────────────────────────────────
   # 🔒 3. БЕЗОПАСНОСТЬ: проверка уязвимостей
   # ───────────────────────────────────────
