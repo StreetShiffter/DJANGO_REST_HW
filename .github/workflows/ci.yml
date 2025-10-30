@@ -237,7 +237,8 @@ jobs:
           echo "${{ secrets.SSH_KEY }}" | head -c 100
           echo "..."
           
-      
+      - name: 🧪 Test SSH connection
+        run: ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} "echo 'SSH OK'"
 
       - name: 📤 Копировать код на сервер
         run: |
