@@ -417,6 +417,9 @@ sudo chmod 600 /home/вашеимяадмина/.ssh/authorized_keys
 ```cat ./deploy_key | tr -d '\r'```
 Увидите строку:
 ![Подключение к DH](./media/docker3.jpg)
+ВАЖНО - если проблема с копированеием dined? то копируй ключ при помощи base64:
+```base64 -w 0 deploy_key```
+
 
 Скопируйте весь вывод для секрета SSH_KEY (включая с -----BEGIN OPENSSH PRIVATE KEY----- и конечную строку)
 
@@ -432,7 +435,7 @@ sudo chmod 600 /home/вашеимяадмина/.ssh/authorized_keys
 - SSH_KNOWN_HOSTS (Отпечаток хоста)
 - ip вашего сервера
 - ssh user (вписать root)
-- DEPLOY_DIR папка деплоя (/home/вашеимяадмина/вашапапка на сервере - введите dir или ls на сервере)
+- DEPLOY_DIR папка деплоя (/home/вашеимяадмина/вашапапка на сервере - введите *pwd*)
 
 - DOCKER_USERNAME(ваш юзернейм на dockerhub)
 - DOCKER_PASSWORD(подготовить ваш access token)
