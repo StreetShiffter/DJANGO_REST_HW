@@ -237,22 +237,28 @@ jobs:
           echo "${{ secrets.SSH_KEY }}" | head -c 100
           echo "..."
 
-#      - name: 📤 Копировать код на сервер
-#        run: |
-#          rsync -avz -e "ssh -o StrictHostKeyChecking=no -o IdentitiesOnly=yes" \
-#            --exclude='.git/' \
-#            --exclude='__pycache__/' \
-#            --exclude='*.pyc' \
-#            --exclude='.github/' \
-#            --exclude='.env' \
-#            --exclude='poetry.lock' \
-#            --exclude='pyproject.toml' \
-#            . ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }}:${{ secrets.DEPLOY_DIR }}
-      - name: 🧪 Тест подключения SSH (IdentitiesOnly=yes)
+      - name: 🔍 Вывести значения секретов (ВРЕМЕННО! УДАЛИТЬ!)
         run: |
-          ssh -o StrictHostKeyChecking=no -o IdentitiesOnly=yes \
-          ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} \
-          'echo "SSH Connection Successful"' -vvv
+          echo "DEBUG: SSH_USER = $SSH_USER"
+          echo "DEBUG: SECRET_IP = $SECRET_IP"
+          echo "DEBUG: DEPLOY_DIR = $DEPLOY_DIR"
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SECRET_IP: ${{ secrets.SECRET_IP }}
+          DEPLOY_DIR: ${{ secrets.DEPLOY_DIR }}
+
+      - name: 📤 Копировать код на сервер
+        run: |
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no -o IdentitiesOnly=yes" \
+            --exclude='.git/' \
+            --exclude='__pycache__/' \
+            --exclude='*.pyc' \
+            --exclude='.github/' \
+            --exclude='.env' \
+            --exclude='poetry.lock' \
+            --exclude='pyproject.toml' \
+            . ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }}:${{ secrets.DEPLOY_DIR }}
+
 
       - name: 🔄 Запустить деплой на сервере(Poetry)
         run: |
