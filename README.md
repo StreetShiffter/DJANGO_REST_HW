@@ -454,6 +454,10 @@ ssh-keyscan your.domain.com
 158.160.193.80 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN50UVw/8ftnOLTY6+SfTCYwitABWG1Lg17W2nff9iFq
 ```
 3. Добавьте новый секрет SSH_KNOWN_HOSTS на github
+4. Выполните команду находясь на своем сервере в своей папке проекта:
+```cat ~/.ssh/authorized_keys```
+Проверяем, что бы там были ключи и добавляем в папку ключей для авторизации /authorized_keys (для имитации входа, только через github)
+```cat ~/.ssh/authorized_keys | ssh streetadmin@100.100.100.80 "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys"```
 
 НАСТРОЙКА В ПРОЕКТЕ
 1. Создаем путь и файл в корне *.github/workflows/ci.yml*
