@@ -225,6 +225,12 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
+      # Отпечаток нашего хоста
+      - name: 🧾 Добавить сервер в known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KNOWN_HOSTS }}" >> ~/.ssh/known_hosts
+
       - name: 📤 Копировать код на сервер
         run: |
           rsync -avz \
