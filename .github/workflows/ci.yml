@@ -214,79 +214,32 @@ jobs:
   # ───────────────────────────────────────
   # 🚀 4. ДЕПЛОЙ ПО SSH (основной способ без Docker)
   # ───────────────────────────────────────
-#  deploy-ssh:
-#    needs: [test, security]
-#    if: github.event_name == 'push' && github.ref == 'refs/heads/feature_35_Nginx_GithubActions'
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: 🔑 Настроить SSH
-#        # Актуальная версия ДЛЯ ДЕПЛОЯ webfactory/ssh-agent@v0.9.0
-#        uses: webfactory/ssh-agent@v0.9.0
-#        with:
-#          ssh-private-key: ${{ secrets.SSH_KEY }}
-#
-#      # Отпечаток нашего хоста
-#      - name: 🧾 Добавить сервер в known_hosts
-#        run: |
-#          mkdir -p ~/.ssh
-#          echo "${{ secrets.SSH_KNOWN_HOSTS }}" >> ~/.ssh/known_hosts
-#
-#      - name: 🔍 Debug SSH key
-#        run: |
-#          echo "Key preview (first 100 chars):"
-#          echo "${{ secrets.SSH_KEY }}" | head -c 100
-#          echo "..."
-#
-#      - name: 📤 Копировать код на сервер
-#        run: |
-#          rsync -avz -e "ssh -o StrictHostKeyChecking=no -o IdentitiesOnly=yes" \
-#            --exclude='.git/' \
-#            --exclude='__pycache__/' \
-#            --exclude='*.pyc' \
-#            --exclude='.github/' \
-#            --exclude='.env' \
-#            --exclude='poetry.lock' \
-#            --exclude='pyproject.toml' \
-#            . ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }}:${{ secrets.DEPLOY_DIR }}
-#
-#      - name: 🔄 Запустить деплой на сервере (Poetry)
-#        run: |
-#          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} << EOF
-#            cd ${{ secrets.DEPLOY_DIR }}
-#
-#            # Установить Poetry, если нужно
-#            if ! command -v poetry &> /dev/null; then
-#              pip3 install poetry
-#              poetry config virtualenvs.in-project true
-#            fi
-#
-#            # Установить зависимости и обновить приложение
-#            poetry install --no-interaction
-#            poetry run python manage.py migrate --noinput
-#            poetry run python manage.py collectstatic --noinput
-#
-#            # Перезапуск (systemd)
-#            sudo systemctl restart myapp.service
-#          EOF
-  deploy:
-    runs-on: ubuntu-latest
+  deploy-ssh:
     needs: [test, security]
     if: github.event_name == 'push' && github.ref == 'refs/heads/feature_35_Nginx_GithubActions'
-
+    runs-on: ubuntu-latest
     steps:
-      - name: 🔑 Set up SSH
-        uses: webfactory/ssh-agent@v0.8.1  # или v0.9.0 — обе работают
+      - name: 🔑 Настроить SSH
+        # Актуальная версия ДЛЯ ДЕПЛОЯ webfactory/ssh-agent@v0.9.0
+        uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
-      - name: 🧾 Add server to known_hosts
+      # Отпечаток нашего хоста
+      - name: 🧾 Добавить сервер в known_hosts
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -p 22 ${{ secrets.SECRET_IP }} >> ~/.ssh/known_hosts
+          echo "${{ secrets.SSH_KNOWN_HOSTS }}" >> ~/.ssh/known_hosts
 
-      - name: 📤 Copy project files to server
+      - name: 🔍 Debug SSH key
         run: |
-          rsync -avz \
+          echo "Key preview (first 100 chars):"
+          echo "${{ secrets.SSH_KEY }}" | head -c 100
+          echo "..."
+
+      - name: 📤 Копировать код на сервер
+        run: |
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no -o IdentitiesOnly=yes" \
             --exclude='.git/' \
             --exclude='__pycache__/' \
             --exclude='*.pyc' \
@@ -296,28 +249,26 @@ jobs:
             --exclude='pyproject.toml' \
             . ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }}:${{ secrets.DEPLOY_DIR }}
 
-      - name: 🔄 Install dependencies and deploy (Poetry)
+      - name: 🔄 Запустить деплой на сервере (Poetry)
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} << EOF
             cd ${{ secrets.DEPLOY_DIR }}
-  
-            # Установить Poetry, если не установлен
+
+            # Установить Poetry, если нужно
             if ! command -v poetry &> /dev/null; then
-              pip3 install poetry --user
-              export PATH="$HOME/.local/bin:$PATH"
+              pip3 install poetry
               poetry config virtualenvs.in-project true
             fi
-  
-            # Установить зависимости
-            poetry install --no-interaction --no-dev
-  
-            # Выполнить миграции и collectstatic
+
+            # Установить зависимости и обновить приложение
+            poetry install --no-interaction
             poetry run python manage.py migrate --noinput
             poetry run python manage.py collectstatic --noinput
-  
-            # Перезапустить сервис
+
+            # Перезапуск (systemd)
             sudo systemctl restart myapp.service
           EOF
+
 
       # ─── АЛЬТЕРНАТИВА: деплой через pip ───────────────
       # - name: 🔄 Деплой через pip (закомментирован)

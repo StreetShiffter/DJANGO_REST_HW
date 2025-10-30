@@ -417,7 +417,7 @@ sudo chmod 600 /home/вашеимяадмина/.ssh/authorized_keys
 ```cat ./deploy_key | tr -d '\r'```
 Увидите строку:
 ![Подключение к DH](./media/docker3.jpg)
-ВАЖНО - если проблема с копированеием dined? то копируй ключ при помощи base64:
+ВАЖНО - если проблема с копированеием dined, то копируй ключ при помощи base64:
 ```base64 -w 0 deploy_key```
 6. ![Подключение к DH](./media/docker5.jpg)
 
