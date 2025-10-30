@@ -419,6 +419,7 @@ sudo chmod 600 /home/вашеимяадмина/.ssh/authorized_keys
 ![Подключение к DH](./media/docker3.jpg)
 ВАЖНО - если проблема с копированеием dined? то копируй ключ при помощи base64:
 ```base64 -w 0 deploy_key```
+6. ![Подключение к DH](./media/docker5.jpg)
 
 
 Скопируйте весь вывод для секрета SSH_KEY (включая с -----BEGIN OPENSSH PRIVATE KEY----- и конечную строку)
