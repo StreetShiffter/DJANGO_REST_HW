@@ -4,7 +4,7 @@ name: 🐍 Django Full CI/CD Pipeline
 # Когда запускать: при пуше или Pull Request в любые ветки
 on:
   push:
-    branches: [ "main", "master", "develop"]
+    branches: [ "main", "master", "develop", "feature_35_Nginx_GithubActions"]
   pull_request:
     branches: [ "main", "master", "develop" ]
 
@@ -15,7 +15,6 @@ on:
 #        - 'main'
 #        - 'master'
 #  pull_request:
-
 
 jobs:
 
@@ -159,6 +158,7 @@ jobs:
         run: |
           poetry run python manage.py migrate --noinput
           poetry run python manage.py test
+
   # ─── PIP (закомментирован) ────────────────────────
   # - name: ⚡ Кэшировать pip
   #   uses: actions/cache@v4
