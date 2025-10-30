@@ -8,8 +8,7 @@ from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-# ИСПОЛЬЗОВАТЬ ДАННЫЕ ИЗ ПЕРЕМЕННОГО ОКРУЖЕНИЯ ИЗ ФАЙЛА .ENV override=True - для перезаписи любых данных только из env
-load_dotenv()
+load_dotenv(override=True)  # ИСПОЛЬЗОВАТЬ ДАННЫЕ ИЗ ПЕРЕМЕННОГО ОКРУЖЕНИЯ ИЗ ФАЙЛА .ENV
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -137,6 +136,10 @@ else:
             "PORT": os.getenv("DB_PORT"),
         }
     }
+
+    SECRET_KEY = os.getenv("SECRET_KEY")
+    # для обработки запросов URL в тестах:
+    ROOT_URLCONF = "config.urls"
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
