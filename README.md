@@ -449,6 +449,10 @@ ssh-keyscan your.domain.com
 ![Подключение к DH](./media/docker4.jpg)
 
 2. Скопируйте строки между 1 и 2 решеткой
+ПРИМЕР :
+```
+158.160.193.80 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN50UVw/8ftnOLTY6+SfTCYwitABWG1Lg17W2nff9iFq
+```
 3. Добавьте новый секрет SSH_KNOWN_HOSTS на github
 
 НАСТРОЙКА В ПРОЕКТЕ
