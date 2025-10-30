@@ -121,7 +121,7 @@ if "docker-compose" in sys.argv[0]:
             "NAME": os.getenv("DB_NAME"),
             "USER": os.getenv("DB_USER"),
             "PASSWORD": os.getenv("DB_PASSWORD"),
-            "HOST": os.getenv("DB_HOST"), # "db" (имя сервиса docker-compose из .env)
+            "HOST": os.getenv("DB_HOST"),  # "db" (имя сервиса docker-compose из .env)
             "PORT": os.getenv("DB_PORT"),
         }
     }
