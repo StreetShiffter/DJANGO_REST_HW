@@ -159,7 +159,6 @@ jobs:
         run: |
           poetry run python manage.py migrate --noinput
           poetry run python manage.py test
-
   # ─── PIP (закомментирован) ────────────────────────
   # - name: ⚡ Кэшировать pip
   #   uses: actions/cache@v4
