@@ -414,7 +414,7 @@ sudo chmod 600 /home/вашеимяадмина/.ssh/authorized_keys
 ```
 
 5. Скопируйте содержимое приватного ключа в GitHub Secrets:
-```cat ./deploy_key```
+```cat ./deploy_key | tr -d '\r'```
 Увидите строку:
 ![Подключение к DH](./media/docker3.jpg)
 
