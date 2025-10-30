@@ -87,8 +87,18 @@ jobs:
       - name: 📥 Установить зависимости
         run: poetry install --no-interaction
 
-      - name: 🧪 Запустить тесты
-        run: poetry run python manage.py test
+#      - name: 🧪 Запустить тесты
+#        run: poetry run python manage.py test
+      - name: 🗃️ Применить миграции и запустить тесты 🧪
+        env:
+          SECRET_KEY: test123
+          DB_NAME: postgres
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_PORT: 5432
+        run: |
+          poetry run python manage.py migrate --noinput
+          poetry run python manage.py test
 
 #  test:
 #    needs: lint
