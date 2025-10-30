@@ -236,17 +236,8 @@ jobs:
           echo "Key preview (first 100 chars):"
           echo "${{ secrets.SSH_KEY }}" | head -c 100
           echo "..."
-
-      - name: 🔍 Вывести значения секретов (ВРЕМЕННО! УДАЛИТЬ!)
-        run: |
-          # Этот трюк обходит простую маскировку, но будьте осторожны!
-          # Выводим имя переменной и "=" отдельно, затем само значение.
-          printf 'SSH_USER='
-          printf '%s\n' "${{ secrets.SSH_USER }}"
-          printf 'SECRET_IP='
-          printf '%s\n' "${{ secrets.SECRET_IP }}"
-          printf 'DEPLOY_DIR='
-          printf '%s\n' "${{ secrets.DEPLOY_DIR }}"
+          
+      
 
       - name: 📤 Копировать код на сервер
         run: |

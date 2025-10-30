@@ -428,7 +428,7 @@ sudo chmod 600 /home/вашеимяадмина/.ssh/authorized_keys
 ```ssh-keyscan -t ed25519 158.160.193.80```
 и увидите вывод:
 ![Подключение к DH](./media/docker4.jpg)
-скопируй нижнюю строку без хэштега и добавь в secrets SSH_KNOWN_HOST
+скопируй все без строк хэштега и добавь в secrets SSH_KNOWN_HOST
 
 
 4. Добавляем секреты:
