@@ -4,13 +4,16 @@ name: 🐍 Django Full CI/CD Pipeline
 # Когда запускать: при пуше или Pull Request в любые ветки
 on:
   push:
-    branches: [ "main", "master", "develop", "feature_35_Nginx_GithubActions"]
+    branches: [ "main", "master", "develop", *]
   pull_request:
     branches: [ "main", "master", "develop" ]
 
 #Альтернатива, если не важно с какими ветками происходят манипуляции
 #on:
 #  push:
+#  branches-ignore:
+#        - 'main'
+#        - 'master'
 #  pull_request:
 
 
@@ -56,8 +59,9 @@ jobs:
   # ───────────────────────────────────────
   # 🧪 2. ТЕСТЫ: Django (зависит от линтера)
   # ───────────────────────────────────────
-  # Быстрые тесты SQLite
+
 #  test:
+  # Быстрые тесты SQLite (требует открытого блока test в settings и не требует миграции)
 #    needs: lint
 #    runs-on: ubuntu-latest
 #    # DJANGO_SETTINGS_MODULE явно определяет настройки проекта, а в них sys.argv содержит 'test'
@@ -90,6 +94,7 @@ jobs:
 #        run: poetry run python manage.py test
 
   test:
+    #Тесты с postgresql 15(требует передачу данных БД для тестов и тестовый ключ)
     needs: lint
     runs-on: ubuntu-latest
 
@@ -152,7 +157,7 @@ jobs:
           DB_PASSWORD: postgres
           DB_PORT: 5432
         run: |
-          poetry run python manage.py migrate --noinput
+#          poetry run python manage.py migrate --noinput
           poetry run python manage.py test
 
   # ─── PIP (закомментирован) ────────────────────────
