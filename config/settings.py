@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(override=True)  # ИСПОЛЬЗОВАТЬ ДАННЫЕ ИЗ ПЕРЕМЕННОГО ОКРУЖЕНИЯ ИЗ ФАЙЛА .ENV
+load_dotenv()  # ИСПОЛЬЗОВАТЬ ДАННЫЕ ИЗ ПЕРЕМЕННОГО ОКРУЖЕНИЯ ИЗ ФАЙЛА .ENV
 
 
 # SECURITY WARNING: keep the secret key used in production secret!

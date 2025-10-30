@@ -64,6 +64,7 @@ jobs:
     env:
       DJANGO_SETTINGS_MODULE: config.settings
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      DEBUG: "True"
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
