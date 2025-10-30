@@ -263,6 +263,7 @@ jobs:
             sudo systemctl restart myapp.service
           EOF
 
+
       # ─── АЛЬТЕРНАТИВА: деплой через pip ───────────────
       # - name: 🔄 Деплой через pip (закомментирован)
       #   run: |
