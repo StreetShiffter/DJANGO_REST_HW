@@ -398,32 +398,42 @@ sudo ufw enable
 
 2. Добавляем новый секрет по кнопке *New repository secret* 
 
-3. на сервере создаем новый ключ для GitHub ACTIONS:
-```ssh-keygen -t ed25519 -C "ВАШ_EMAIL" -f ~/.ssh/id_ed25519_github_actions```
-и получите его из терминала для проверки:
-```cat ~/.ssh/id_ed25519_github_actions.pub```
-
-4. Добавить в папку *~/.ssh/authorized_keys* для авторизации:
+3.  на сервере создаем новый ключ для GitHub ACTIONS:
+```ssh-keygen -t ed25519 -C "вашмейл@gmail.com" -f ./deploy_key -N ""```
+    подключаем публичный ключ на ваш сервер (авторизуйтесь на вашем сервере обязательно):
 ```
-mkdir -p ~/.ssh
-chmod 700 ~/.ssh
-cat ~/.ssh/id_ed25519_github_actions.pub >> ~/.ssh/authorized_keys
-chmod 600 ~/.ssh/authorized_keys
+получите его из терминала для проверки:
+cat ./deploy_key.pub
+
+Далее вбиваем построчно
+sudo -u вашеимяадмина mkdir -p /home/вашеимяадмина/.ssh
+echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGabc123... вашемайла" | sudo tee /home/вашеимяадмина/.ssh/authorized_keys
+sudo chown -R вашеимяадмина:вашеимяадмина /home/вашеимяадмина/.ssh
+sudo chmod 700 /home/вашеимяадмина/.ssh
+sudo chmod 600 /home/вашеимяадмина/.ssh/authorized_keys
 ```
 
 5. Скопируйте содержимое приватного ключа в GitHub Secrets:
-```cat ~/.ssh/id_ed25519_github_actions```
+```cat ./deploy_key```
 Увидите строку:
 ![Подключение к DH](./media/docker3.jpg)
 
-Скопируйте весь вывод для секрета (включая с -----BEGIN OPENSSH PRIVATE KEY----- и конечную строку)
+Скопируйте весь вывод для секрета SSH_KEY (включая с -----BEGIN OPENSSH PRIVATE KEY----- и конечную строку)
+
+6. Вам нужен отпечаток вашего хоста для безопасной авторизации Github (SSH_KNOWN_HOSTS):
+```ssh-keyscan -t ed25519 158.160.193.80```
+и увидите вывод:
+![Подключение к DH](./media/docker4.jpg)
+скопируй нижнюю строку без хэштега и добавь в secrets SSH_KNOWN_HOST
 
 
 4. Добавляем секреты:
-- ssh ключ (в Метаданных вашего сервера должен быть SSH ключ - такой же должен лежать в секрете github)
+- SSH_KEY ключ (в Метаданных вашего сервера должен быть SSH ключ - такой же должен лежать в секрете github)
+- SSH_KNOWN_HOSTS (Отпечаток хоста)
 - ip вашего сервера
 - ssh user (вписать root)
 - папка деплоя (/root/ваша папка на сервере - введите dir или ls на сервере)
+
 - DOCKER_USERNAME(ваш юзернейм на dockerhub)
 - DOCKER_PASSWORD(подготовить ваш access token)
 1. В dockerhub в настройках профиля ищем *Account settings*:
@@ -437,26 +447,6 @@ chmod 600 ~/.ssh/authorized_keys
 4. Скопируйте токен (ОН ДОСТУПЕН ОДИН РАЗ)
 5. Добавьте в Github secrets
 
-- Отпечаток хоста
-1. на вашем сервере введите (только с вашим доменом или ip):
-```
-ssh-keyscan your.server.ip
-# или
-ssh-keyscan your.domain.com
-```
-Получите примерно такое сообщение:
-![Подключение к DH](./media/docker4.jpg)
-
-2. Скопируйте строки между 1 и 2 решеткой
-ПРИМЕР :
-```
-158.160.193.80 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN50UVw/8ftnOLTY6+SfTCYwitABWG1Lg17W2nff9iFq
-```
-3. Добавьте новый секрет SSH_KNOWN_HOSTS на github
-4. Выполните команду находясь на своем сервере в своей папке проекта:
-```cat ~/.ssh/authorized_keys```
-Проверяем, что бы там были ключи и добавляем в папку ключей для авторизации /authorized_keys (для имитации входа, только через github)
-```cat ~/.ssh/authorized_keys | ssh streetadmin@100.100.100.80 "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys"```
 
 НАСТРОЙКА В ПРОЕКТЕ
 1. Создаем путь и файл в корне *.github/workflows/ci.yml*
