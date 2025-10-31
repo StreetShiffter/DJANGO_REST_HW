@@ -659,6 +659,27 @@ SSH_KNOW_HOST увидите вывод:
 5. Добавьте в Github secrets
 
 
+🧪ДЛЯ УСПЕШНОГО ДЕПЛОЯ ПО SSH(если не настроили установку в коде)🧪
+Вам необходим *pip3* и *poetry* на сервере:
+```
+# Обновить систему
+sudo apt update
+
+# Установить pip3
+sudo apt install -y python3-pip
+
+# Установить Poetry (официальный способ)
+curl -sSL https://install.python-poetry.org | python3 -
+
+#Poetry установится в ~/.local/bin/poetry, поэтому добавьте его в PATH
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+
+#Проверьте
+poetry --version
+```
+
+
 НАСТРОЙКА В ПРОЕКТЕ
 1. Создаем путь и файл в корне *.github/workflows/ci.yml*
 ВАЖНО ДЛЯ ТЕСТОВ ИСПОЛЬЗОВАНИЕ ОТДЕЛЬНОЙ СУБД в Settings (если в проекте используется postgres):
