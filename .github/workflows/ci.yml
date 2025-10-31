@@ -214,100 +214,38 @@ jobs:
   # ───────────────────────────────────────
   # 🚀 4. ДЕПЛОЙ ПО SSH (основной ручной способ без Docker)
   # ───────────────────────────────────────
-#  deploy-ssh: резерв
-#    needs: test
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Настроить SSH
-#        uses: appleboy/ssh-action@v1.0.3
-#        with:
-#          host: ${{ secrets.SECRET_IP }}
-#          username: ${{ secrets.SSH_USER }}
-#          key: ${{ secrets.SSH_KEY }}
-#          script: |
-#            ls
-#            cd /home/streetadmin/DJANGO_REST_HW/
-#            git pull
-#
-#            # Установить Poetry, если нужно
-#            if ! command -v poetry &> /dev/null; then
-#              sudo apt install poetry
-#              poetry config virtualenvs.in-project true
-#            fi
-#
-#            # Установить зависимости и обновить приложение
-#            poetry install --no-interaction
-#            poetry run python manage.py migrate --noinput
-#            poetry run python manage.py collectstatic --noinput
-#
-#
-#
-#            sudo docker compose down || true
-#            sudo docker compose up -d --build
-#
-
   deploy-ssh:
-    needs: [test, security]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/feature_35_Nginx_GithubActions'
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: 🔑 Настроить SSH
-        # Актуальная версия ДЛЯ ДЕПЛОЯ webfactory/ssh-agent@v0.9.0
-        uses: webfactory/ssh-agent@v0.9.0
+        uses: appleboy/ssh-action@v1.0.3
         with:
-          ssh-private-key: ${{ secrets.SSH_KEY }}
-
-      # Отпечаток нашего хоста
-      - name: 🧾 Добавить сервер в known_hosts
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_KNOWN_HOSTS }}" >> ~/.ssh/known_hosts
-
-      - name: 🔍 Debug SSH_key
-        run: |
-          echo "Key preview (first 100 chars):"
-          echo "${{ secrets.SSH_KEY }}" | head -c 100
-          echo "..."
-          
-      - name: 🧪 Test SSH connection
-        run: ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} "echo 'SSH OK'"
-
-
-      - name: 📤 Копировать код на сервер
-        run: |
-          tar cf - \
-            --exclude='.git' \
-            --exclude='__pycache__' \
-            --exclude='*.pyc' \
-            --exclude='.github' \
-            --exclude='.env' \
-            --exclude='poetry.lock' \
-            --exclude='pyproject.toml' \
-            . | ssh ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} "mkdir -p ${{ secrets.DEPLOY_DIR }} && tar xf - -C ${{ secrets.DEPLOY_DIR }}"
-
-
-      - name: 🎯 Запустить деплой на сервере (Docker Compose)
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} << EOF
-            cd ${{ secrets.DEPLOY_DIR }}
-
-            # Убедиться, что pip установлен
-            if ! command -v pip3 &> /dev/null; then
-              sudo apt update
-              sudo apt install -y python3-pip
-            fi
-
-            # Установить Poetry, если нужно
+          host: ${{ secrets.SECRET_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            ls
+            cd /home/streetadmin/DJANGO_REST_HW/
+            git pull
+  
+            # 📤 Установить Poetry, если нужно
             if ! command -v poetry &> /dev/null; then
-              curl -sSL https://install.python-poetry.org | python3 -
-              echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
-              export PATH="$HOME/.local/bin:$PATH"
+              sudo apt install poetry
+              poetry config virtualenvs.in-project true
             fi
+  
+            # 🧾 Установить зависимости и обновить приложение
+            poetry install --no-interaction
+            poetry run python manage.py migrate --noinput
+            poetry run python manage.py collectstatic --noinput
+  
+  
+  
+            sudo docker compose down || true
+            sudo docker compose up -d --build
 
-            # Запустить через Docker Compose
-            docker compose down || true
-            docker compose up -d --build
-          EOF
+
 
 #       ─── АЛЬТЕРНАТИВА: деплой через pip ───────────────
 #       - name: 🔄 Деплой через pip (закомментирован)
