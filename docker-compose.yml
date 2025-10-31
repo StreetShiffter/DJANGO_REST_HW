@@ -1,5 +1,3 @@
-version: '3.12'
-
 services:
 # ПРОПИСЫВАЕМ DJANGO приложение
   web:
