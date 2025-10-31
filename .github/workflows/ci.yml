@@ -240,19 +240,30 @@ jobs:
       - name: 🧪 Test SSH connection
         run: ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} "echo 'SSH OK'"
 
+#      - name: 📤 Копировать код на сервер
+#        env:
+#          SSH_AUTH_SOCK: ${{ env.SSH_AUTH_SOCK }}
+#        run: |
+#          rsync -avz -e "ssh -o StrictHostKeyChecking=no -o IdentitiesOnly=yes" \
+#            --exclude='.git/' \
+#            --exclude='__pycache__/' \
+#            --exclude='*.pyc' \
+#            --exclude='.github/' \
+#            --exclude='.env' \
+#            --exclude='poetry.lock' \
+#            --exclude='pyproject.toml' \
+#            . ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }}:${{ secrets.DEPLOY_DIR }}
       - name: 📤 Копировать код на сервер
-        env:
-          SSH_AUTH_SOCK: ${{ env.SSH_AUTH_SOCK }}
         run: |
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no -o IdentitiesOnly=yes" \
-            --exclude='.git/' \
-            --exclude='__pycache__/' \
+          tar cf - \
+            --exclude='.git' \
+            --exclude='__pycache__' \
             --exclude='*.pyc' \
-            --exclude='.github/' \
+            --exclude='.github' \
             --exclude='.env' \
             --exclude='poetry.lock' \
             --exclude='pyproject.toml' \
-            . ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }}:${{ secrets.DEPLOY_DIR }}
+            . | ssh ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} "mkdir -p ${{ secrets.DEPLOY_DIR }} && tar xf - -C ${{ secrets.DEPLOY_DIR }}"
 
 
       - name: 🔄 Запустить деплой на сервере(Poetry)
