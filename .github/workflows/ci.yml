@@ -214,6 +214,38 @@ jobs:
   # ───────────────────────────────────────
   # 🚀 4. ДЕПЛОЙ ПО SSH (основной ручной способ без Docker)
   # ───────────────────────────────────────
+#  deploy-ssh: резерв
+#    needs: test
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Настроить SSH
+#        uses: appleboy/ssh-action@v1.0.3
+#        with:
+#          host: ${{ secrets.SECRET_IP }}
+#          username: ${{ secrets.SSH_USER }}
+#          key: ${{ secrets.SSH_KEY }}
+#          script: |
+#            ls
+#            cd /home/streetadmin/DJANGO_REST_HW/
+#            git pull
+#
+#            # Установить Poetry, если нужно
+#            if ! command -v poetry &> /dev/null; then
+#              sudo apt install poetry
+#              poetry config virtualenvs.in-project true
+#            fi
+#
+#            # Установить зависимости и обновить приложение
+#            poetry install --no-interaction
+#            poetry run python manage.py migrate --noinput
+#            poetry run python manage.py collectstatic --noinput
+#
+#
+#
+#            sudo docker compose down || true
+#            sudo docker compose up -d --build
+#
+
   deploy-ssh:
     needs: [test, security]
     if: github.event_name == 'push' && github.ref == 'refs/heads/feature_35_Nginx_GithubActions'
@@ -240,19 +272,7 @@ jobs:
       - name: 🧪 Test SSH connection
         run: ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} "echo 'SSH OK'"
 
-#      - name: 📤 Копировать код на сервер
-#        env:
-#          SSH_AUTH_SOCK: ${{ env.SSH_AUTH_SOCK }}
-#        run: |
-#          rsync -avz -e "ssh -o StrictHostKeyChecking=no -o IdentitiesOnly=yes" \
-#            --exclude='.git/' \
-#            --exclude='__pycache__/' \
-#            --exclude='*.pyc' \
-#            --exclude='.github/' \
-#            --exclude='.env' \
-#            --exclude='poetry.lock' \
-#            --exclude='pyproject.toml' \
-#            . ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }}:${{ secrets.DEPLOY_DIR }}
+
       - name: 📤 Копировать код на сервер
         run: |
           tar cf - \
@@ -271,9 +291,10 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} << EOF
             cd ${{ secrets.DEPLOY_DIR }}
 
+           
             # Установить Poetry, если нужно
             if ! command -v poetry &> /dev/null; then
-              pip3 install poetry
+              sudo apt install poetry
               poetry config virtualenvs.in-project true
             fi
 
@@ -282,9 +303,10 @@ jobs:
             poetry run python manage.py migrate --noinput
             poetry run python manage.py collectstatic --noinput
 
-            # Перезапуск (systemd)
-            sudo systemctl restart myapp.service
-          EOF
+
+
+            sudo docker compose down || true
+            sudo docker compose up -d --build
 
 
 #       ─── АЛЬТЕРНАТИВА: деплой через pip ───────────────
