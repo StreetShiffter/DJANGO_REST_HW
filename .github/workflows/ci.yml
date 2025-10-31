@@ -241,6 +241,8 @@ jobs:
         run: ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} "echo 'SSH OK'"
 
       - name: 📤 Копировать код на сервер
+        env:
+          SSH_AUTH_SOCK: ${{ env.SSH_AUTH_SOCK }}
         run: |
           rsync -avz -e "ssh -o StrictHostKeyChecking=no -o IdentitiesOnly=yes" \
             --exclude='.git/' \
