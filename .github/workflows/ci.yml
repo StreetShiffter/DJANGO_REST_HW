@@ -286,10 +286,25 @@ jobs:
             . | ssh ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} "mkdir -p ${{ secrets.DEPLOY_DIR }} && tar xf - -C ${{ secrets.DEPLOY_DIR }}"
 
 
-      - name: 🔄 Запустить деплой через Docker Compose
+      - name: 🎯 Запустить деплой на сервере (Docker Compose)
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} << EOF
             cd ${{ secrets.DEPLOY_DIR }}
+
+            # Убедиться, что pip установлен
+            if ! command -v pip3 &> /dev/null; then
+              sudo apt update
+              sudo apt install -y python3-pip
+            fi
+
+            # Установить Poetry, если нужно
+            if ! command -v poetry &> /dev/null; then
+              curl -sSL https://install.python-poetry.org | python3 -
+              echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+              export PATH="$HOME/.local/bin:$PATH"
+            fi
+
+            # Запустить через Docker Compose
             docker compose down || true
             docker compose up -d --build
           EOF
