@@ -295,7 +295,7 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 3. Добавьте себя в группу docker (чтобы не использовать sudo):
 ```sudo usermod -aG docker $USER```
 ВАЖНО - обязательно выйти из сессии *exit* и авторизоваться заново *ssh testadmin@0.0.0.0*
-4. Проверьте установку и проверть работу:
+4. Проверьте установку и проверьте работу:
 ```
 docker --version
 docker compose version
@@ -338,49 +338,19 @@ git checkout feature_35
 ТАКЖЕ ВАЖНО при пуше на github - подтяните на сервере изменения(если нет CI/CD):
 1. ```cd ~/DJANGO_REST_HW``` *переключаемся на ветку*
 2. ```git pull origin feature_35``` подтягиваем изменения
-3. ```docker compose down``` *ЕСЛИ КОНТЕЙНЕР БЫЛ ЗАПУЩЕН - ОСТАНАВЛИВАЕМ*
-4. ```docker-compose up -d --build``` *пересобираем контейнеры*
+4. Добавляем пользователя в группу docker
+```sudo usermod -aG docker streetadmin```
+5. ```docker compose down``` *ЕСЛИ КОНТЕЙНЕР БЫЛ ЗАПУЩЕН - ОСТАНАВЛИВАЕМ*
+6. ```docker-compose up -d --build``` *пересобираем контейнеры*
 ВАЖНО - при использовании *celery_beat* применяйте миграции ВРУЧНУЮ:
 ```docker compose exec web python manage.py migrate```
 
-5. Создаем на ветке файл env:
+7. Создаем на ветке файл env:
 ```nano .env```
-6. После добавления данных сохраняем и выходим: *Ctrl+O → Enter → Ctrl+X*
+8. После добавления данных сохраняем и выходим: *Ctrl+O → Enter → Ctrl+X*
 
 Проваливаемся в ВМ и подлючаемся:
 ![Подключение к ВМ](./media/connect_BM.jpg)
-
-                            🛠️НАСТРОЙКА ВМ🛠️
-1. Обновление списка пакетов:
-```
-sudo apt update
-```
-2. Обновление списка всех установленных пакетов до их последних версий:
-```
-sudo apt upgrade
-```
-3. Проверяем состояние фаервола
-```
-sudo ufw status
-```
-4. Активация, если inactive:
-```
-sudo ufw enable
-```
-5. Теперь откройте необходимые порты:
-    Порт 80 для HTTP:
-```sudo ufw allow 80/tcp```
-    Порт 443 для HTTPS:
-```sudo ufw allow 443/tcp```
-6. Проверка работы фаервола:
-```sudo ufw status```
-7. Откройте порт 22 для SSH:
-```sudo ufw allow 22/tcp```
-8. 
-Ожидаемый результат:
-    *В результате выполнения команды вы должны увидеть, что порт 22 находится 
-    в состоянии ALLOW наряду с портами 80 и 443. Это означает, что ваш сервер
-    будет доступен для SSH-подключений, а также для веб-трафика.*
 
                         📦ВКЛЮЧЕНИЕ КОНТЕЙНЕРОВ📦
 1. Переходим в папку проекта:
@@ -392,54 +362,291 @@ sudo ufw enable
 2. Если *studo* выключен, то используйте:
 ```docker compose up -d --build```
 
+###      🛠️НАСТРОЙКА ВМ🛠️
+Для начала работы убедитесь что папка .ssh создана по пути C:\Users\ВАШ_ПОЛЬЗОВАТЕЛЬ\.ssh
+
+- СОЗДАЕМ Виртуальную Машину(ВМ) с именем админа и сгенерированным ssh + архив скачается на пк(сохраните по пути users/User/.ssh/)
+![Подключение к ВМ](./media/BM_SSH.jpg)
+
+- Далее распаковываем архив с ключом(достать ключи в папку вручную)
+- Открываем приватный ключ в powershell
+```
+Get-Content -Path "C:\Users\ВАШЕИМЯЮЗЕРА\.ssh\ssh2025"
+```
+
+Будет примерно такой ключ - скопировать весь и сохранить в txt(для подстраховки)
+
+![Подключение к ВМ](./media/docker_3.jpg)
+
+можно проверить этот ключ для подключения к серверу через *Yandex Cloud Shell*(имя админа + ключ)
+
+![Подключение к ВМ](./media/вм.jpg)
+![Подключение к ВМ](./media/вм2.jpg)
+
+!!! ВАЖНО - При переустановке windows желательно забрать всю папку .ssh из системы !!!
+
+-Сгенерируй ключ из приватного и сравни с ключом на ВМ в разделе МЕТАДАННЫЕ:
+```ssh-keygen -y -f "$env:USERPROFILE\.ssh\ssh2025"```
+	ИТОГ: это твой ключ только для соединеия твоего ПК и твоего СЕРВЕРА
+
+🔥 МОЖНО СДЕЛАТЬ ПРОЩЕ, ЕСЛИ СОЗДАТЬ ПАРУ КЛЮЧЕЙ НА ПК и создать ВМ отдав публичную часть 🔥
+
+1. 🧱 Настрой фаервол (UFW)
+```
+# Разрешить SSH (обязательно ДО включения!)
+sudo ufw allow 22/tcp
+
+# Разрешить веб-трафик
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+
+# Включить фаервол
+sudo ufw --force enable
+
+# Проверить
+sudo ufw status
+```
+
+2. 🔄 Обнови систему ВМ(&& - команда "если выполнилась предыдущая - начинай следущую") - если обновил, то пропусти шаг:
+```sudo apt update && sudo apt upgrade -y```
+
+или отдельно построчно
+```
+sudo apt update
+#################################################
+sudo apt upgrade
+
+# Активация, если inactive:
+sudo ufw enable
+```
 #### 💻 НАСТРОЙКА CI/CD в Github ACTIONS ☁️ 
 
-1. Заходим в настройки проекта на GitHub и выбираем *Secrets and variables*
+СОЗДАЕМ КЛЮЧИ ДЛЯ работы ручоного деплоя и CI/CD
 
-2. Добавляем новый секрет по кнопке *New repository secret* 
+❗❗❗РАБОТА НА СВОЕМ ПК В POWERSHELL❗❗❗
 
-3.  на сервере создаем новый ключ для GitHub ACTIONS:
-```ssh-keygen -t ed25519 -C "вашмейл@gmail.com" -f ./deploy_key -N ""```
-    подключаем публичный ключ на ваш сервер (авторизуйтесь на вашем сервере обязательно):
+☁️СОЗДАНИЕ КЛЮЧА ДЛЯ Github Actions
+1. 🔐 Создаем пары ключей с названием *github-actions-deploy* для Github Action (просто жмем везде enter или y)
+через полный путь или переменную:
 ```
-получите его из терминала для проверки:
-cat ./deploy_key.pub
+ssh-keygen -t ed25519 -C "github-actions-deploy" -f "C:\Users\ВАШЕ_ИМЯ_ПОЛЬЗОВАТЕЛЯ\.ssh\id_ed25519_github_actions"
+#####################################################################################################################
+ssh-keygen -t ed25519 -C "github-actions-deploy" -f "$env:USERPROFILE\.ssh\id_ed25519_github_actions"
+```
+Получаем в случае успеха:
+![Получение ключа](./media/ssh.jpg)
 
-Далее вбиваем построчно
-sudo -u вашеимяадмина mkdir -p /home/вашеимяадмина/.ssh
-echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGabc123... вашемайла" | sudo tee /home/вашеимяадмина/.ssh/authorized_keys
-sudo chown -R вашеимяадмина:вашеимяадмина /home/вашеимяадмина/.ssh
-sudo chmod 700 /home/вашеимяадмина/.ssh
-sudo chmod 600 /home/вашеимяадмина/.ssh/authorized_keys
+2. 📄 Копируем приватный ключ *id_ed25519_github_actions* - он пойдет в проект в раздел Github Secrets:
+```type ~/.ssh/id_ed25519_github_actions```
+✅ Скопируй ВЕСЬ этот текст — он понадобится как значение для секрета SSH_KEY в GitHub.
+
+3. 🔑 Скопируй публичный ключ — он пойдёт на сервер твоей ВМ:
+```type ~/.ssh/id_ed25519_github_actions.pub```
+
+💾СОЗДАНИЕ КЛЮЧА ДЛЯ Github репозитория (для ручного деплоя)⚠️Этот пункт можно выполнить на сервере и скопировать публичный для репозитория⚠️
+1. 🔐 Создаем пары ключей с названием *deploy_github* для Github репозитория (просто жмем везде enter или y)
+через полный путь или переменную
+```
+ssh-keygen -t ed25519 -C "deploy_github" -f "C:\Users\ВАШЕ_ИМЯ_ПОЛЬЗОВАТЕЛЯ\.ssh\id_ed25519_deploy_github"
+#####################################################################################################################
+ssh-keygen -t ed25519 -C "deploy_github" -f "$env:USERPROFILE\.ssh\id_ed25519_deploy_github"
 ```
 
-5. Скопируйте содержимое приватного ключа в GitHub Secrets:
-```cat ./deploy_key | tr -d '\r'```
-Увидите строку:
-![Подключение к DH](./media/docker3.jpg)
-ВАЖНО - если проблема с копированеием dined, то копируй ключ при помощи base64:
-```base64 -w 0 deploy_key```
-6. ![Подключение к DH](./media/docker5.jpg)
+2. 📄 Копируем приватный ключ *id_ed25519_deploy_github* - он пойдет в проект в раздел Github Secrets:
+```type ~/.ssh/id_ed25519_deploy_github```
+✅ Скопируй ВЕСЬ этот текст — он понадобится для твоего сервера
+
+3. 🔑 Скопируй публичный ключ — он пойдёт в раздел SSH ключей твоего репозитория:
+```type ~/.ssh/id_ed25519_deploy_github.pub```
+
+🔎ОПЦИОНАЛЬНО: 
+ Убедись в корректности Git-настроек (опционально)
+```
+git config --global user.name
+git config --global user.email
+```
+→ Убедись, что email совпадает с тем, что в ключах.
+
+❗❗❗РАБОТА НА СВОЕМ ПК В POWERSHELL - ПОДКЛЮЧЕНИЕ К ВМ❗❗❗
+1. 🔓Подключаемся к своей ВМ(явно указываем приватный ключ или не указываем работаем через Cloud Shell):
+```
+# Если создал пару ключей на пк и отдал ВМ публичный
+ssh -i "C:\Users\Support\.ssh\ssh2025" test@158.160.27.139
+
+# Если создал пару ключей на YC, скачал и распаковал ключи на пк
+ssh -i "C:\Users\Support\.ssh\ssh2025" test@158.160.27.139
+```
+
+🌟ИЛИ СДЕЛАТЬ SSH-конфиг (гибкий и профессиональный):
+В PowerShell выполни
+
+Шаг 1: Создай файл config
+```
+notepad "$env:USERPROFILE\.ssh\config"
+```
+Если Notepad спросит — создать файл — нажми Да.
 
 
-Скопируйте весь вывод для секрета SSH_KEY (включая с -----BEGIN OPENSSH PRIVATE KEY----- и конечную строку)
+Шаг 2: Вставь настройки
+```
+Host yandex-vm
+    HostName 158.160.27.139
+    User test
+    IdentityFile ~/.ssh/ssh2025
+    IdentitiesOnly yes
+```
+💡 HostName 158.160.27.139 - ip твоего хоста+
+💡 User test - test это имя админа на серваке
+💡 yandex-vm — это псевдоним, который ты сам придумал. Можно назвать как угодно. 
 
-6. Вам нужен отпечаток вашего хоста для безопасной авторизации Github (SSH_KNOWN_HOSTS):
-```ssh-keyscan -t ed25519 158.160.193.80```
-и увидите вывод:
+Шаг 3: Сохрани и установи права (важно!)
+Закрой Notepad. Затем в PowerShell:
+```
+# Установи правильные права на config
+icacls "$env:USERPROFILE\.ssh\config" /inheritance:r
+icacls "$env:USERPROFILE\.ssh\config" /grant:r "$env:USERNAME:(R)"
+```
+Шаг 4: Подключайся!
+```
+ssh yandex-vm
+```
+Или, если хочешь по IP — добавь ещё один блок в config:
+
+```
+Host 158.160.27.139
+    User test
+    IdentityFile ~/.ssh/ssh2025
+    IdentitiesOnly yes
+```
+
+После этого заработает и:
+```
+ssh test@158.160.27.139
+```
+
+2. 🔄 Обнови систему ВМ(&& - команда "если выполнилась предыдущая - начинай следущую") - если обновил, то пропусти шаг:
+```sudo apt update && sudo apt upgrade -y```
+
+или отдельно построчно
+```
+sudo apt update
+#################################################
+sudo apt upgrade
+```
+
+3. 🤔 Узнаем имя админа и путь папки копирования на сервер(DEPLOY_DIR будет в Github Secret):
+```
+whoami
+echo $HOME
+ 
+```
+
+4. 🧠 Создай постоянного пользователя например, admin
+```
+export USERNAME=admin
+
+#Создаем нового юзера и добавляем в группу studo 
+sudo adduser --gecos "" --disabled-password "$USERNAME"
+sudo usermod -aG sudo "$USERNAME"
+
+# Надёжное создание .ssh
+sudo mkdir -p /home/"$USERNAME"/.ssh
+sudo chown "$USERNAME":"$USERNAME" /home/"$USERNAME"/.ssh
+sudo chmod 700 /home/"$USERNAME"/.ssh
+
+# Добавление ключа
+echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI... github-actions-deploy" | sudo tee /home/"$USERNAME"/.ssh/authorized_keys > /dev/null
+sudo chown "$USERNAME":"$USERNAME" /home/"$USERNAME"/.ssh/authorized_keys
+sudo chmod 600 /home/"$USERNAME"/.ssh/authorized_keys
+
+# Права на домашнюю папку (обязательно!)
+sudo chmod 755 /home/"$USERNAME"
+```
+
+✅ Теперь у тебя есть пользователь с правами sudo.
+
+🧩 Или используем готового админа
+```
+# 1. Убедитесь, что вы test
+whoami  # должно быть: test
+
+# 2. Создайте .ssh (если нет)
+mkdir -p ~/.ssh
+
+# 3. Добавьте ключ (пример)
+echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI... github-actions-deploy" >> ~/.ssh/authorized_keys
+
+# 4. Права
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
+```
+🔒 ВАЖНО - Без этих прав SSH откажет в подключении, даже если ключ верный! 🔒 
+
+6. ✏️ Возмем приватный длиный ключ для ручного деплоя *id_ed25519_deploy_github* и выполни команду:
+```
+# Создать файл приватного ключа
+sudo -u $USERNAME nano /home/$USERNAME/.ssh/id_ed25519_deploy_github
+```
+Копируем приватный ключ в открытой панели и сохраняем *Ctrl+O > Enter > Ctrl+X*
+при повторном вводе команды, должен открытся заполненный файл
+
+7.🤖 Установи права:
+```
+sudo chmod 600 /home/$USERNAME/.ssh/id_ed25519_deploy_github
+sudo chown $USERNAME:$USERNAME /home/$USERNAME/.ssh/id_ed25519_deploy_github
+```
+
+8. 🧷 Создай SSH-конфиг для GitHub:
+```
+sudo -u $USERNAME tee /home/$USERNAME/.ssh/config > /dev/null <<EOF
+Host github.com
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/id_ed25519_deploy_github
+  IdentitiesOnly yes
+EOF
+
+sudo chmod 600 /home/$USERNAME/.ssh/config
+sudo chown $USERNAME:$USERNAME /home/$USERNAME/.ssh/config
+```
+
+Можно прочитать его на корректность заполнения
+```cat /home/$USERNAME/.ssh/config```
+ Получится так:
+![Получение ключа](./media/вм3.jpg)
+
+9. 📝 Добавляем публичный ключ *deploy_github* на Github репозиторий в настройках SSH ключей и выполняем:
+```sudo -u $USERNAME ssh -T git@github.com```
+
+При успешном выполнении будет приветствие
+
+
+10.🔌 Настройка Secrets(информацию достанешь в консоли )
+Создай:
+```
+#SSH_KEY = содержимое приватного ключа Ключа №1 (id_ed25519_github_actions)
+#SSH_USER 
+whoami 
+
+#SECRET_IP
+hostname -I
+
+#DEPLOY_DIR 
+echo $HOME
+
+#SSH_KNOW_HOST - отпечаток сервера
+ssh-keyscan -t ed25519 ваш_шз_сервера
+
+#ip вашего сервера
+SERVER_IP
+
+DOCKER_USERNAME(ваш юзернейм на dockerhub)
+DOCKER_PASSWORD(подготовить ваш access token)
+```
+SSH_KNOW_HOST увидите вывод:
 ![Подключение к DH](./media/docker4.jpg)
 скопируй все без строк хэштега и добавь в secrets SSH_KNOWN_HOST
 
-
-4. Добавляем секреты:
-- SSH_KEY ключ (в Метаданных вашего сервера должен быть SSH ключ - такой же должен лежать в секрете github)
-- SSH_KNOWN_HOSTS (Отпечаток хоста)
-- ip вашего сервера
-- ssh user (вписать root)
-- DEPLOY_DIR папка деплоя (/home/вашеимяадмина/вашапапка на сервере - введите *pwd*)
-
-- DOCKER_USERNAME(ваш юзернейм на dockerhub)
-- DOCKER_PASSWORD(подготовить ваш access token)
 1. В dockerhub в настройках профиля ищем *Account settings*:
 ![Подключение к DH](./media/docker.jpg)
 
@@ -517,6 +724,9 @@ git commit -m "Test CI"
 git remote set-url origin git@github.com:StreetShiffter/DJANGO_REST_HW.git
 git push
 ```
+
+
+
 
 📄 Лицензия
 Этот проект лицензирован по MIT License — подробнее см. файл LICENSE.
