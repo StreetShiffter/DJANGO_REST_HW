@@ -288,8 +288,8 @@ jobs:
 
       - name: 🔄 Запустить деплой на сервере (Docker Compose)
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} << 'EOF'
-            cd $DEPLOY_DIR
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} << EOF
+            cd ${{ secrets.DEPLOY_DIR }}
 
             # Убедиться, что pip установлен
             if ! command -v pip3 &> /dev/null; then
@@ -300,16 +300,11 @@ jobs:
             # Установить Poetry, если нужно
             if ! command -v poetry &> /dev/null; then
               curl -sSL https://install.python-poetry.org | python3 -
-              echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
-              export PATH="$HOME/.local/bin:$PATH"
+              echo 'export PATH="\$HOME/.local/bin:\$PATH"' >> ~/.bashrc
+              export PATH="\$HOME/.local/bin:\$PATH"
             fi
 
-            # Установить зависимости (если нужно для локального запуска)
-            # poetry install --no-interaction
-            # poetry run python manage.py migrate --noinput
-            # poetry run python manage.py collectstatic --noinput
-
-            # Запустить через Docker Compose (рекомендуется)
+            # Запустить через Docker Compose
             docker compose down || true
             docker compose up -d --build
           EOF
