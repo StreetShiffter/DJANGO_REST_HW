@@ -290,17 +290,36 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
+#      - name: 🔄 Обновить контейнер на сервере
+#        env:
+#          DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/my-django-app:${{ github.sha }}
+#          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+#          # Добавьте другие секреты, если нужно:
+#          # DATABASE_URL: ${{ secrets.DATABASE_URL }}
+#          # ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
+#        run: |
+#          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} << EOF
+#            docker stop my-django-app || true
+#            docker rm my-django-app || true
+#            docker run -d \
+#              --name my-django-app \
+#              --restart unless-stopped \
+#              -p 8000:8000 \
+#              -e SECRET_KEY="$SECRET_KEY" \
+#              -e DEBUG="False" \
+#              "$DOCKER_IMAGE"
+#          EOF
       - name: 🔄 Обновить контейнер на сервере
-        env:
-          DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/my-django-app:${{ github.sha }}
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          # Добавьте другие секреты, если нужно:
-          # DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          # ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} << EOF
+            # Убить процесс на порту 8000, если он не в Docker
+            sudo lsof -i :8000 -t | xargs -r kill
+
+            # Остановить и удалить контейнер (если есть)
             docker stop my-django-app || true
             docker rm my-django-app || true
+
+            # Запустить новый контейнер
             docker run -d \
               --name my-django-app \
               --restart unless-stopped \
