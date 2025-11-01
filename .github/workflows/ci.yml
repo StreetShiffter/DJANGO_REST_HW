@@ -226,7 +226,7 @@ jobs:
 #          key: ${{ secrets.SSH_KEY }}
 #          script: |
 #            ls
-#            cd /home/streetadmin/DJANGO_REST_HW/
+#            cd ${{ secrets.DEPLOY_DIR }} #/home/streetadmin/DJANGO_REST_HW/
 #            git pull
 #
 #            # 📤 Установить Poetry, если нужно
@@ -278,22 +278,29 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # ─── СБОРКА ОБРАЗА ────────────────────────────────
+      # ─── СБОРКА ОБРАЗА и ЗАПУСК ────────────────────────────────
       - name: 🏗️ Собрать и запушить образ
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/my-django-app:${{ github.sha }} .
           docker push ${{ secrets.DOCKER_USERNAME }}/my-django-app:${{ github.sha }}
 
-      # ─── ЗАПУСК НА СЕРВЕРЕ ────────────────────────────
-      - name: 🔑 Настроить SSH для запуска контейнера
+      - name: 🔑 Настроить SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
+
+      - name: 📤 Обновить .env на сервере
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} << EOF
+            cd ${{ secrets.DEPLOY_DIR }}
+            echo "IMAGE_TAG=${{ github.sha }}" > .env
+          EOF
 
       - name: 🔄 Деплой через Docker Compose
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} << EOF
             cd ${{ secrets.DEPLOY_DIR }}
             docker compose down
-            docker compose up -d --build
+            docker compose pull    # ← скачивает образ из Docker Hub
+            docker compose up -d   # ← запускает (без --build!)
           EOF
