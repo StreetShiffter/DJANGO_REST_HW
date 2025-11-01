@@ -313,7 +313,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} << EOF
             # Убить процесс на порту 8000, если он не в Docker
-            sudo lsof -i :8000 -t | xargs -r kill
+            sudo lsof -i :8000 -t | xargs -r sudo kill
 
             # Остановить и удалить контейнер (если есть)
             docker stop my-django-app || true
