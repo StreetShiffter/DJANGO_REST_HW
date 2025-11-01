@@ -214,36 +214,36 @@ jobs:
   # ───────────────────────────────────────
   # 🚀 4. ДЕПЛОЙ ПО SSH (основной ручной способ без Docker)
   # ───────────────────────────────────────
-  deploy-ssh:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🔑 Настроить SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SECRET_IP }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            ls
-            cd /home/streetadmin/DJANGO_REST_HW/
-            git pull
-  
-            # 📤 Установить Poetry, если нужно
-            if ! command -v poetry &> /dev/null; then
-              sudo apt install poetry
-              poetry config virtualenvs.in-project true
-            fi
-  
-            # 🧾 Установить зависимости и обновить приложение
-            poetry install --no-interaction
-            poetry run python manage.py migrate --noinput
-            poetry run python manage.py collectstatic --noinput
-  
-  
-  
-            sudo docker compose down || true
-            sudo docker compose up -d --build
+#  deploy-ssh:
+#    needs: test
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: 🔑 Настроить SSH
+#        uses: appleboy/ssh-action@v1.0.3
+#        with:
+#          host: ${{ secrets.SECRET_IP }}
+#          username: ${{ secrets.SSH_USER }}
+#          key: ${{ secrets.SSH_KEY }}
+#          script: |
+#            ls
+#            cd /home/streetadmin/DJANGO_REST_HW/
+#            git pull
+#
+#            # 📤 Установить Poetry, если нужно
+#            if ! command -v poetry &> /dev/null; then
+#              sudo apt install poetry
+#              poetry config virtualenvs.in-project true
+#            fi
+#
+#            # 🧾 Установить зависимости и обновить приложение
+#            poetry install --no-interaction
+#            poetry run python manage.py migrate --noinput
+#            poetry run python manage.py collectstatic --noinput
+#
+#
+#
+#            sudo docker compose down || true
+#            sudo docker compose up -d --build
 
 
 
@@ -264,48 +264,48 @@ jobs:
   # ───────────────────────────────────────
   # 🐳 5. ДЕПЛОЙ ЧЕРЕЗ DOCKER (современный способ)
   # ───────────────────────────────────────
-#  deploy-docker:
-#    needs: [test, security]
-#    if: github.event_name == 'push' && github.ref == 'refs/heads/feature_35_Nginx_GithubActions'
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: 📥 Checkout
-#        uses: actions/checkout@v4
-#
-#      - name: 🐳 Войти в Docker Hub
-#        uses: docker/login-action@v3
-#        with:
-#          username: ${{ secrets.DOCKER_USERNAME }}
-#          password: ${{ secrets.DOCKER_PASSWORD }}
-#
-#      # ─── СБОРКА ОБРАЗА ────────────────────────────────
-#      - name: 🏗️ Собрать и запушить образ
-#        run: |
-#          docker build -t ${{ secrets.DOCKER_USERNAME }}/my-django-app:${{ github.sha }} .
-#          docker push ${{ secrets.DOCKER_USERNAME }}/my-django-app:${{ github.sha }}
-#
-#      # ─── ЗАПУСК НА СЕРВЕРЕ ────────────────────────────
-#      - name: 🔑 Настроить SSH для запуска контейнера
-#        uses: webfactory/ssh-agent@v0.9.0
-#        with:
-#          ssh-private-key: ${{ secrets.SSH_KEY }}
-#
-#      - name: 🔄 Обновить контейнер на сервере
-#        env:
-#          DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/my-django-app:${{ github.sha }}
-#          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-#          # Добавьте другие секреты, если нужно:
-#          # DATABASE_URL: ${{ secrets.DATABASE_URL }}
-#          # ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
-#        run: |
-#          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} << EOF
-#            docker stop my-django-app || true
-#            docker rm my-django-app || true
-#            docker run -d \
-#              --name my-django-app \
-#              --restart unless-stopped \
-#              -p 8000:8000 \
-#              -e SECRET_KEY="$SECRET_KEY" \
-#              -e DEBUG="False" \
-#              "$DOCKER_IMAGE"
-#          EOF
+  deploy-docker:
+    needs: [test, security]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/feature_35_Nginx_GithubActions'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🐳 Войти в Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # ─── СБОРКА ОБРАЗА ────────────────────────────────
+      - name: 🏗️ Собрать и запушить образ
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/my-django-app:${{ github.sha }} .
+          docker push ${{ secrets.DOCKER_USERNAME }}/my-django-app:${{ github.sha }}
+
+      # ─── ЗАПУСК НА СЕРВЕРЕ ────────────────────────────
+      - name: 🔑 Настроить SSH для запуска контейнера
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}
+
+      - name: 🔄 Обновить контейнер на сервере
+        env:
+          DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/my-django-app:${{ github.sha }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          # Добавьте другие секреты, если нужно:
+          # DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          # ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} << EOF
+            docker stop my-django-app || true
+            docker rm my-django-app || true
+            docker run -d \
+              --name my-django-app \
+              --restart unless-stopped \
+              -p 8000:8000 \
+              -e SECRET_KEY="$SECRET_KEY" \
+              -e DEBUG="False" \
+              "$DOCKER_IMAGE"
+          EOF
