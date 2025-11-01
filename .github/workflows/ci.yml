@@ -293,8 +293,14 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SECRET_IP }} << EOF
             cd ${{ secrets.DEPLOY_DIR }}
-            echo "IMAGE_TAG=${{ github.sha }}" > .env
-          EOF
+            cat > .env << INNEREOF
+            DOCKER_IMAGE=${{ secrets.DOCKER_USERNAME }}/my-django-app
+            IMAGE_TAG=${{ github.sha }}
+            DB_NAME=${{ secrets.DB_NAME }}
+            DB_USER=${{ secrets.DB_USER }}
+            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            INNEREOF
+            EOF
 
       - name: 🔄 Деплой через Docker Compose
         run: |
