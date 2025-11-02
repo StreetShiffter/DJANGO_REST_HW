@@ -271,6 +271,7 @@ docker compose ps
 ```
 ### 🐳 DOCKER server 🌍
 УСТАНОВКА DOCKER НА СЕРВЕР
+ВНИМАНИЕ: команда *docker-compose up -d --build* на сервере работает без тире *docker compose up -d --build* 
 1. Установка всех библиотек и обновления(оф. документация)
 ```
 # Add Docker's official GPG key:
@@ -342,7 +343,7 @@ git checkout feature_35
 4. Добавляем пользователя в группу docker
 ```sudo usermod -aG docker streetadmin```
 5. ```docker compose down``` *ЕСЛИ КОНТЕЙНЕР БЫЛ ЗАПУЩЕН - ОСТАНАВЛИВАЕМ*
-6. ```docker-compose up -d --build``` *пересобираем контейнеры*
+6. ```docker compose up -d --build``` *пересобираем контейнеры*
 ВАЖНО - при использовании *celery_beat* применяйте миграции ВРУЧНУЮ:
 ```docker compose exec web python manage.py migrate```
 
