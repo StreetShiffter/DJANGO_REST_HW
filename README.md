@@ -235,12 +235,11 @@ docker stop my-django-app
 docker rm my-django-app
 ```
 
-Запуск контейнера с параметрами .env как 1 контейнер на фоне(-d)
+Запуск контейнера с параметрами .env как 1 контейнер нашего приложения на фоне (-d)
 -указываем имя контейнера(--name)
 -порт(-p)
 -env-файл (--env-file)
 - и имя образа
-*(d settings ALLOWED_HOSTS = ['*'] для разработки)*
 ```
 docker run -d --name my-django-app -p 8000:8000 --env-file .env django_rest_hw # для проверки работы django 
 docker compose up -d --build # запускает все
@@ -269,6 +268,8 @@ docker-compose logs
 docker-compose ps -a
 docker compose ps
 ```
+
+ssh-keygen -y -f "$env:USERPROFILE\.ssh\ssh-key-1762166919849"
 ### 🐳 DOCKER server 🌍
 УСТАНОВКА DOCKER НА СЕРВЕР
 ВНИМАНИЕ: команда *docker-compose up -d --build* на сервере работает без тире *docker compose up -d --build* 
@@ -280,6 +281,7 @@ sudo apt-get install ca-certificates curl
 sudo install -m 0755 -d /etc/apt/keyrings
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
+
 
 # Add the repository to Apt sources:
 echo \
