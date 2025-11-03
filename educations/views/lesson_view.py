@@ -1,11 +1,9 @@
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 
 from educations.models import Lesson
 from educations.paginators import MyPagination
 from educations.serializers import LessonSerializer
-from educations.tasks import send_mail_update_course
-from users.permissions import IsOwnerOrModerator
 
 
 class LessonCreateList(generics.ListCreateAPIView):

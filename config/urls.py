@@ -1,11 +1,11 @@
-from django.contrib import admin
-from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
+from django.urls import include, path
 from drf_spectacular.views import (
     SpectacularAPIView,
-    SpectacularSwaggerView,
     SpectacularRedocView,
+    SpectacularSwaggerView,
 )
 
 urlpatterns = [
@@ -25,7 +25,13 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += static(
-        settings.STATIC_URL,
-        document_root=settings.STATIC_ROOT or settings.STATICFILES_DIRS[0],
-    )
+
+    # Безопасное определение корня статики
+    static_root = getattr(settings, "STATIC_ROOT", None)
+    if not static_root:
+        staticfiles_dirs = getattr(settings, "STATICFILES_DIRS", [])
+        if staticfiles_dirs:
+            static_root = staticfiles_dirs[0]
+
+    if static_root:
+        urlpatterns += static(settings.STATIC_URL, document_root=static_root)

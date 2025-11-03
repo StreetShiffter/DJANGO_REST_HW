@@ -1,22 +1,21 @@
-import stripe
-from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets, generics, status
+from rest_framework import generics, status, viewsets
+from rest_framework.filters import OrderingFilter
 from rest_framework.generics import (
     CreateAPIView,
-    RetrieveUpdateAPIView,
     DestroyAPIView,
+    RetrieveUpdateAPIView,
     get_object_or_404,
 )
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from educations.models import Course, Lesson
+from educations.models import Course
 from educations.serializers import CourseSerializer, LessonSerializer
-from users.models import Payment, User, Subscription
-from users.serializers import PaymentSerializer, UserSerializer, UserProfileSerializer
-from users.services import process_lesson_payment, process_course_payment
+from users.models import Payment, Subscription, User
+from users.serializers import PaymentSerializer, UserProfileSerializer, UserSerializer
+from users.services import process_course_payment, process_lesson_payment
 
 
 class PaymentViewSet(viewsets.ModelViewSet):
@@ -77,7 +76,8 @@ class UserSubscribeAPIView(APIView):
 
     def post(self, request, *args, **kwargs):
         user = request.user
-        # Лучше передавать data в body, а не в GET(используется при POST, PUT, PATCH с форматами: JSON, form-data, etc.)
+        # Лучше передавать data в body, а не
+        # в GET(используется при POST, PUT, PATCH с форматами: JSON, form-data, etc.)
         # Передача числа курса в теле запроса(request - тело словарь(data), course_id - ключ)
         course_id = request.data.get("course_id")
 

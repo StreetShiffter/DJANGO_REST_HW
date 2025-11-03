@@ -1,10 +1,9 @@
-from django.db import models
-from django.contrib.auth.models import BaseUserManager, AbstractUser
-from django.core.validators import RegexValidator
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
+from django.db import models
 
 from config import settings
-
 
 # from educations.models import Lesson, Course - меняем на lazy model resolution
 

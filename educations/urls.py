@@ -1,11 +1,17 @@
 from django.urls import path
+from rest_framework.routers import DefaultRouter
 
 from users.views import PayCourseAPIView, PayLessonAPIView
+
 from .apps import EducationsConfig
-from rest_framework.routers import DefaultRouter
 from .models import Lesson
 from .serializers import LessonSerializer
-from .views import CourseViewSet, LessonCreateList, LessonRetrieveUpdateDestroy
+from .views import (
+    CourseViewSet,
+    HomeView,
+    LessonCreateList,
+    LessonRetrieveUpdateDestroy,
+)
 
 router = DefaultRouter()
 router.register(r"courses", CourseViewSet, basename="course")
@@ -29,6 +35,7 @@ urlpatterns = [
     ),
     path("courses/<int:course_id>/pay/", PayCourseAPIView.as_view(), name="course-pay"),
     path("lesson/<int:lesson_id>/pay/", PayLessonAPIView.as_view(), name="lesson-pay"),
+    path("", HomeView.as_view(), name="home"),
 ]
 
 urlpatterns += router.urls

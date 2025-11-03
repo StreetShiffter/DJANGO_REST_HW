@@ -1,35 +1,41 @@
-version: '3.12'
-
 services:
+
 # ПРОПИСЫВАЕМ DJANGO приложение
   web:
-    build: .
-#    command: python manage.py runserver 0.0.0.0:8000
-    command: sh -c "python manage.py makemigrations && python manage.py migrate 
-             && python manage.py runserver 0.0.0.0:8000"
+    build: . # Для сборка через github(поменяйте коммент на image, если надо с dockerhub)
+    #image: ${DOCKER_IMAGE}:${IMAGE_TAG}
+#Подгрузка статики и запуск вебсервера для приложения
+    command: sh -c "python manage.py collectstatic --noinput 
+             && gunicorn config.wsgi:application --bind 0.0.0.0:8000"
     # тома для сохранения данных вне контейнера
     volumes:
       - .:/DJANGO_REST_HW
-      - static_volume:/DJANGO_REST_HW/static
+      - static_volume:/DJANGO_REST_HW/staticfiles
       - media_volume:/DJANGO_REST_HW/media
     ports:
       - "8000:8000"
     # условия запуска(не будет работать, пока не запустятся зависимости)
     depends_on:
-      - db
-      - redis
-    #env_file не нужен, т.к. он есть в образе dockerfile и  используешь load_dotenv() в коде
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: always # Для автоперезагрузки сервиса на ВМ в случае падения
+    #env_file не нужен, т.к. он есть в образе dockerfile и используешь load_dotenv() в коде
       #и файл .env попал в контейнер (через COPY или volumes).
-    environment:
-      - USE_DOCKER=True #важный флаг переключения БД в settings
+      #прописан condition, так как есть хелвчек в этих контейнерах и сервис включится при условии
+      #не только запуска, но и проверки здоровья контейнера (контейнер=0)
+
 
 # ПРОПИСЫВАЕМ Celery
   worker:
     build: .
     command: celery -A config worker --loglevel=info --pool=eventlet
     depends_on:
-      - redis
-      - db
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     volumes:
       - .:/DJANGO_REST_HW
     #env_file не нужен, так как файл .env лежит рядом с docker-compose.yml
@@ -42,11 +48,14 @@ services:
     build: .
     command: celery -A config beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
     depends_on:
-      - redis
-      - db
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     volumes:
       - .:/DJANGO_REST_HW
     #env_file не нужен, так как файл .env лежит рядом с docker-compose.yml
+
 
 # ПРОПИСЫВАЕМ redis
   redis:
@@ -54,6 +63,26 @@ services:
     image: redis:7-alpine
     ports:
       - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    restart: always
+
+#ПРОПИСЫВАЕМ ВЕБ СЕРВЕР
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"# если будете настраивать HTTPS
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - static_volume:/static
+      - media_volume:/media
+    depends_on:
+      - web
+    restart: always
 
 # ПРОПИСЫВАЕМ postgres(db это DB_HOST)
   db:
@@ -68,6 +97,12 @@ services:
       - .env #Хоть он лежит рядом, но лучше явно указать
       #Нужен так как мы переопределяем environment и берем
       # данные из .env который лежит рядом - РАБОТА НА УРОВНЕ КОНТЕЙНЕРА, А НЕ DJANGO
+    healthcheck:
+      test: "pg_isready -U $${POSTGRES_USER}"# $$DB_USER если не сработает
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
 
 # Перечисляем имена томов без параметров, которые участвует в работе
 volumes:

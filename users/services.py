@@ -1,9 +1,8 @@
-# users/services.py
-
 import os
+
 import stripe
-from decimal import Decimal
 from django.shortcuts import get_object_or_404
+
 from educations.models import Course, Lesson
 from users.models import Payment
 

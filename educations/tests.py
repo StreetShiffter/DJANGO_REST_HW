@@ -1,7 +1,8 @@
-from rest_framework.test import APITestCase
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from rest_framework import status
+from rest_framework.test import APITestCase
+
 from educations.models import Course, Lesson
 from users.models import Subscription
 
